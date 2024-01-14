@@ -39,16 +39,16 @@
 		</p>
 	</div>
 
-	<Separator class="my-2 w-full bg-white"/>
+	<Separator class="my-2 w-full "/>
 
 	<!-- TODO: Zod validation -->
 	<form on:submit|preventDefault={onSubmit} class="w-full">
 		<div class="grid gap-2">
 			<div>
-				<Input id="username" placeholder="sexo/sexette" type="text" autocapitalize="none" autocorrect="off" disabled={isLoading} />
+				<Input id="username" placeholder="Samwel" type="text" autocapitalize="none" autocorrect="off" disabled={isLoading} />
 			</div>
 			<div>
-				<Input id="lobby" placeholder="Lobby420" type="text" autocapitalize="none" autocorrect="off" disabled={isLoading} />
+				<Input id="lobby" placeholder="Ta' Mattea" type="text" autocapitalize="none" autocorrect="off" disabled={isLoading} />
 			</div>
 			<Button class="mt-1" type="submit" disabled={isLoading}>
 				Join Lobby
