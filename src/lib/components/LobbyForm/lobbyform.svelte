@@ -19,10 +19,11 @@
 		// const formData = new FormData(event.target)
         // console.log([...formData]);
         // event.target.reset();
-
+	
 		isLoading = true;
-
-		await submitCallback(event)
+	
+		if (submitCallback) 
+			await submitCallback(event)
 
 		setTimeout(() => {
 			isLoading = false;
@@ -47,7 +48,7 @@
 				<Input id="username" placeholder="sexo/sexette" type="text" autocapitalize="none" autocorrect="off" disabled={isLoading} />
 			</div>
 			<div>
-				<Input id="password" placeholder="Lobby420" type="password" autocapitalize="none" autocorrect="off" disabled={isLoading} />
+				<Input id="lobby" placeholder="Lobby420" type="text" autocapitalize="none" autocorrect="off" disabled={isLoading} />
 			</div>
 			<Button class="mt-1" type="submit" disabled={isLoading}>
 				Join Lobby
