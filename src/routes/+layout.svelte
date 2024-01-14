@@ -3,5 +3,8 @@
 	import { ModeWatcher } from "mode-watcher";
 </script>
 
-<!-- <ModeWatcher /> -->
+<svelte:head>
+	<title>BillSplitter.Svelte</title>
+</svelte:head>
+
 <slot />

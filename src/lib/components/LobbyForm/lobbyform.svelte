@@ -44,17 +44,8 @@
 				<Input id="password" placeholder="Lobby420" type="password" autocapitalize="none" autocorrect="off" disabled={isLoading} />
 			</div>
 			<Button class="mt-1" type="submit" disabled={isLoading}>
-
 				Join Lobby
 			</Button>
 		</div>
 	</form>
-
-	<div class="flex-col space-y-2 text-center my-2">
-		<h1 class="text-xl font-semibold tracking-tight">Or</h1>
-	</div>
-
-	<Button class="w-full">
-		Create your own Lobby
-	</Button> 
 </div>
