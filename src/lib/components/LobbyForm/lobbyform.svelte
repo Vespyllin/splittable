@@ -15,6 +15,11 @@
 	const onSubmit = async (event: any) => {
 		console.log("SUBMITTED")
 
+		// TODO: Reset form
+		// const formData = new FormData(event.target)
+        // console.log([...formData]);
+        // event.target.reset();
+
 		isLoading = true;
 
 		await submitCallback(event)
@@ -35,6 +40,7 @@
 
 	<Separator class="my-2 w-full bg-white"/>
 
+	<!-- TODO: Zod validation -->
 	<form on:submit|preventDefault={onSubmit} class="w-full">
 		<div class="grid gap-2">
 			<div>
