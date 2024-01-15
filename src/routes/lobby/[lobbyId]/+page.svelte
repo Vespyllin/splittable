@@ -4,7 +4,7 @@
 	import Loading from '../components/loading.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
-	import { Socket, io } from 'socket.io-client';
+	import { io } from 'socket.io-client';
 	import type { Lobby } from '$lib/types/state';
 
 	export let data;

@@ -12,7 +12,7 @@ const main = () => {
 	app.use(express.json());
 	app.use(cors());
 
-	const io = new Server(3000, { cors: { origin: '*' } });
+	const wss = new Server(3000, { cors: { origin: '*' } });
 
 	app.get('/sanity', (req, res) => {
 		res.json({ status: 'ok' }).sendStatus(200);
@@ -40,15 +40,16 @@ const main = () => {
 
 		if (!lobbyId || !initState) return res.sendStatus(400);
 
-		io.of(lobbyId).on('connection', (socket) => {
+		wss.of(lobbyId).on('connection', (socket) => {
 			socket.emit('messages', `message on ${lobbyId}`);
 		});
 
 		setInterval(() => {
-			io.of(lobbyId).emit('messages', { userID: 'abc', item: 'item', contribution: x++ / 3 });
+			wss.of(lobbyId).emit('messages', { userID: 'abc', item: 'item', contribution: x++ / 3 });
 		}, 500);
 
-		io.of(lobbyId)
+		wss
+			.of(lobbyId)
 			.timeout(60 * 10 * 1000)
 			.disconnectSockets(true);
 
@@ -61,13 +62,13 @@ const main = () => {
 	});
 
 	app.post('/send_lobby', (req, res) => {
-		io.of(req.body.lobbyId).emit('messages', `message ${new Date()}`);
+		wss.of(req.body.lobbyId).emit('messages', `message ${new Date()}`);
 		res.sendStatus(200);
 	});
 
 	app.use(handler);
 
-	io.on('connection', (socket) => {
+	wss.on('connection', (socket) => {
 		socket.emit('messages', "This guy's tutorial sucked so bad omg");
 	});
 
