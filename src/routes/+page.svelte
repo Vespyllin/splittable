@@ -1,5 +1,5 @@
 <script lang="ts">
-	import JoinLobbyForm from './joinlobbyform.svelte';
+	import JoinLobbyForm from './components/joinlobbyform.svelte';
 	import LoveSpiteHeader from './lovespiteheader.svelte';
 	import Footer from '$lib/components/footer/footer.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';

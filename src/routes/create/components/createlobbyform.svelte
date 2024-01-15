@@ -4,7 +4,7 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
-	import ItemEntry from './itementry.svelte';
+	import ItemEntry from '../itementry.svelte';
 
 	import { cn } from '$lib/utils';
 
