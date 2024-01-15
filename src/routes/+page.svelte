@@ -1,22 +1,23 @@
 <script lang="ts">
-	import LobbyForm from '$lib/components/LobbyForm/lobbyform.svelte';
-	import LoveSpiteHeader from '$lib/components/LoveSpiteHeader/lovespiteheader.svelte';
+	import JoinLobbyForm from './joinlobbyform.svelte';
+	import LoveSpiteHeader from './lovespiteheader.svelte';
+	import Footer from '$lib/components/footer/footer.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+
+	let isLoading = false;
 </script>
 
 <div class="flex h-screen w-screen flex-col p-8">
-	<LoveSpiteHeader />
+	<LoveSpiteHeader class="mb-10 mt-5 h-[25%] justify-center" />
 
-	<LobbyForm />
+	<JoinLobbyForm bind:isLoading />
 
 	<div class="my-2 flex-col space-y-2 text-center">
 		<h1 class="text-xl font-semibold tracking-tight">Or</h1>
 	</div>
-	<Button class="w-full">Create Your Own Lobby</Button>
+	<a href="/create">
+		<Button disabled={isLoading} class="w-full">Create Your Own Lobby</Button>
+	</a>
 
-	<div class="absolute inset-x-0 bottom-3 mx-auto h-fit max-w-[95%]">
-		<footer class="justify-evenly text-center text-[0.7rem] text-sm text-muted-foreground">
-			Għal Kyle għax kien qed jitnejjikli bid-degree.
-		</footer>
-	</div>
+	<Footer />
 </div>
