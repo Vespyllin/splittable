@@ -36,7 +36,6 @@
 
 	<Separator class="my-2 w-full " />
 
-	<!-- TODO: Zod validation -->
 	<form on:submit={onSubmit} class="w-full">
 		<div class="mt-1 grid gap-2">
 			<div>

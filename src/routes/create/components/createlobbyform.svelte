@@ -29,12 +29,19 @@
 </script>
 
 <div class={cn('flex w-full grow flex-col items-center overflow-y-hidden', className)}>
-	<div class="mb-5 flex flex-col space-y-2 text-center">
+	<div class="mb-2 flex flex-col space-y-2 text-center">
 		<h1 class="text-2xl font-bold tracking-tight">Create a Lobby</h1>
 	</div>
 
-	<div class="w-full">
-		<Label class="ml-1 text-sm">Lobby Code</Label>
+	<div class="grid w-full gap-2">
+		<Input
+			id="username"
+			placeholder="Samwel"
+			type="text"
+			autocapitalize="none"
+			autocorrect="off"
+			disabled={isLoading}
+		/>
 		<Input
 			id="lobby"
 			placeholder="Ta' Mattea"

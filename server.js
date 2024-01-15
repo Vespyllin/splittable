@@ -3,12 +3,9 @@ import express from 'express';
 import { Server } from 'socket.io';
 import cors from 'cors';
 
-// const PORT = process.env.PORT;
-const PORT = 5173;
+const PORT = process.env.PORT ?? 5173;
 
-const lobbies = [
-	{ id: 'ID123', expires: new Date().getTime() + 60 * 10 * 1000, initState: { test: 'value123' } }
-];
+const lobbies = [];
 
 const main = () => {
 	const app = express();
@@ -24,8 +21,13 @@ const main = () => {
 	app.get('/check_lobby/:lobbyId', async (req, res) => {
 		const { lobbyId } = req.params;
 
+		console.log('check', lobbies);
+
 		const expiryDate = lobbies.find((v) => v.id == lobbyId)?.expires;
-		if (expiryDate && expiryDate > new Date().getTime()) {
+		if (
+			expiryDate
+			// && expiryDate > new Date().getTime()
+		) {
 			res.sendStatus(200);
 		} else {
 			res.sendStatus(202);
@@ -42,12 +44,18 @@ const main = () => {
 			socket.emit('messages', `message on ${lobbyId}`);
 		});
 
+		setInterval(() => {
+			io.of(lobbyId).emit('messages', { userID: 'abc', item: 'item', contribution: x++ / 3 });
+		}, 500);
+
 		io.of(lobbyId)
 			.timeout(60 * 10 * 1000)
 			.disconnectSockets(true);
 
-		const expiryDate = new Date().getDate() + 60 * 10 * 1000;
+		const expiryDate = new Date().getTime() + 60 * 10 * 1000;
 		lobbies.push({ id: lobbyId, expires: expiryDate });
+
+		console.log('create', lobbies);
 
 		res.sendStatus(200);
 	});
@@ -62,10 +70,6 @@ const main = () => {
 	io.on('connection', (socket) => {
 		socket.emit('messages', "This guy's tutorial sucked so bad omg");
 	});
-
-	// const httpServer = http.createServer(app);
-
-	// createSocket(httpServer);
 
 	app.listen(PORT, () => {
 		console.log(`Hosting on port ${PORT}`);
