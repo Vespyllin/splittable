@@ -39,6 +39,8 @@
 		"formsnap": "^0.4.2",
 		"mode-watcher": "^0.1.2",
 		"radix-icons-svelte": "^1.2.1",
+		"socket.io": "^4.7.4",
+		"socket.io-client": "^4.7.4",
 		"sveltekit-superforms": "^1.13.3",
 		"tailwind-merge": "^2.2.0",
 		"tailwind-variants": "^0.1.20",
