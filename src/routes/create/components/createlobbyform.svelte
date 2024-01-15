@@ -7,6 +7,7 @@
 	import ItemEntry from './itemEntry.svelte';
 
 	import { cn } from '$lib/utils';
+	import type { ReceiptEntry } from '$lib/types/state';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
@@ -24,7 +25,7 @@
 	let price: string;
 
 	export let lobbyName: string;
-	export let data: { name: string; total: string; quantity: string; price: string }[];
+	export let data: ReceiptEntry[];
 </script>
 
 <div class={cn('flex w-full grow flex-col items-center overflow-y-hidden', className)}>

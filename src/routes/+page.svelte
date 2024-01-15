@@ -3,6 +3,7 @@
 	import LoveSpiteHeader from './components/loveSpiteHeader.svelte';
 	import Footer from '$lib/components/footer/footer.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 
 	let isLoading = false;
 </script>
