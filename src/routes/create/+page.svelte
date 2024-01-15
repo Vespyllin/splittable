@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CreateLobbyForm from './components/createlobbyform.svelte';
+	import CreateLobbyForm from './components/createLobbyForm.svelte';
 	import MinimalHeader from '$lib/components/header/header.svelte';
 	import Footer from '$lib/components/footer/footer.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
