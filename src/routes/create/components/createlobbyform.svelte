@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Input from '$lib/components/ui/input/input.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
 	import ItemEntry from './itemEntry.svelte';
