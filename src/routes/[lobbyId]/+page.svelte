@@ -93,6 +93,7 @@
 				<Separator class="my-3 w-[75%]" />
 			</div>
 
+			<!-- TODO: Wrap in dialog for contribution selection and detailed view -->
 			{#each state.entries as entry}
 				<div class="mb-2 flex h-fit flex-col rounded-sm border-2 p-2">
 					<div class="grid h-auto w-full grid-cols-11 gap-2">
@@ -125,7 +126,7 @@
 			<p>Not Found</p>
 		{/if}
 	{:catch error}
-		<p style="color: red">{error.message}</p>
+		<p class="text-red-600">{error.message}</p>
 	{/await}
 
 	<!-- {content} -->
