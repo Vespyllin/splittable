@@ -3,7 +3,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
-	import ItemEntry from './itemEntry.svelte';
+	import ItemEntry from '../../routes/create/components/itemEntry.svelte';
 
 	import { cn } from '$lib/utils';
 	import type { ReceiptEntry } from '$lib/types/state';

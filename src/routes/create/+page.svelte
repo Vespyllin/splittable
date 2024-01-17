@@ -1,7 +1,7 @@
 <script lang="ts">
-	import CreateLobbyForm from './components/createLobbyForm.svelte';
-	import MinimalHeader from '$lib/components/header/header.svelte';
-	import Footer from '$lib/components/footer/footer.svelte';
+	import CreateLobbyForm from '../../lib/components/createLobbyForm.svelte';
+	import MinimalHeader from '$lib/components/header.svelte';
+	import Footer from '$lib/components/footer.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import type { ReceiptEntry } from '$lib/types/state';
 

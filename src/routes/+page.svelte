@@ -1,9 +1,8 @@
 <script lang="ts">
-	import JoinLobbyForm from './components/joinLobbyForm.svelte';
-	import LoveSpiteHeader from './components/loveSpiteHeader.svelte';
-	import Footer from '$lib/components/footer/footer.svelte';
+	import JoinLobbyForm from '$lib/components/joinLobbyForm.svelte';
+	import LoveSpiteHeader from '$lib/components/loveSpiteHeader.svelte';
+	import Footer from '$lib/components/footer.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
 
 	let isLoading = false;
 </script>

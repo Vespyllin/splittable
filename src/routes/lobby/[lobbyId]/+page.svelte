@@ -1,7 +1,7 @@
 <script lang="ts">
-	import MinimalHeader from '$lib/components/header/header.svelte';
-	import Footer from '$lib/components/footer/footer.svelte';
-	import Loading from './components/loading.svelte';
+	import MinimalHeader from '$lib/components/header.svelte';
+	import Footer from '$lib/components/footer.svelte';
+	import Loading from '$lib/components/loading.svelte';
 
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
@@ -90,12 +90,12 @@
 			</div>
 
 			<div class="flex justify-center">
-				<Separator class="my-3 w-[75%]" />
+				<Separator class="my-2 w-full" />
 			</div>
 
 			<!-- TODO: Wrap in dialog for contribution selection and detailed view -->
-			{#each state.entries as entry}
-				<div class="mb-2 flex h-fit flex-col rounded-sm border-2 p-2">
+			{#each state.entries as entry, idx}
+				<div class="my-1 flex h-fit flex-col p-2">
 					<div class="grid h-auto w-full grid-cols-11 gap-2">
 						<div class="col-span-5 border-b-2 pl-1">{entry.name}</div>
 						<div class="col-span-2 border-b-2 pl-1">{entry.quantity}</div>
@@ -121,6 +121,9 @@
 						</div>
 					</div>
 				</div>
+				{#if state.entries.length - 1 != idx}
+					<Separator class="m-1 mx-auto w-[75%] bg-primary" />
+				{/if}
 			{/each}
 		{:else}
 			<p>Not Found</p>
