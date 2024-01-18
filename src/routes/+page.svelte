@@ -7,7 +7,7 @@
 	let isLoading = false;
 </script>
 
-<div class="flex h-screen w-screen flex-col p-8">
+<div class="flex h-full w-full flex-col p-8">
 	<LoveSpiteHeader class="mb-10 mt-5 h-[25%] justify-center" />
 
 	<JoinLobbyForm bind:isLoading />
