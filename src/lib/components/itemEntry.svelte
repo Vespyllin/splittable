@@ -74,9 +74,7 @@
 		bind:value={total}
 		on:change={() => {
 			total = validateCurrency(total);
-			if (quantity) {
-				price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
-			} else if (price) quantity = padDecimal(`${round(parseFloat(total) / parseInt(price))}`);
+			if (quantity) price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
 		}}
 	/>
 	<Input
@@ -96,7 +94,6 @@
 		on:change={() => {
 			price = validateCurrency(price);
 			if (quantity) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
-			else if (total) quantity = padDecimal(`${round(parseFloat(total) * parseInt(price))}`);
 		}}
 	/>
 	<Button
