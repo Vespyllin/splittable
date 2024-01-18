@@ -9,7 +9,7 @@
 
 <div class="flex h-full w-full flex-col p-8">
 	<LoveSpiteHeader class="mb-10 mt-5 h-[25%] justify-center" />
-	<!-- 
+
 	<JoinLobbyForm bind:isLoading />
 
 	<div class="my-2 flex-col space-y-2 text-center">
@@ -19,5 +19,5 @@
 		<Button disabled={isLoading} class="w-full">Create Your Own Lobby</Button>
 	</a>
 
-	<Footer /> -->
+	<Footer />
 </div>
