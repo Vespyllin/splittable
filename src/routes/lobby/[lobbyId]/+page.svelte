@@ -5,8 +5,9 @@
 
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
-	import { io } from 'socket.io-client';
 	import type { Lobby } from '$lib/types/state';
+
+	import { io } from 'socket.io-client';
 
 	export let data;
 
@@ -37,31 +38,7 @@
 		]
 	};
 
-	let content = {};
-
-	let x = 0;
-	const setSocket = async () => {
-		console.log('SETTING SOCKET', data.lobbyID);
-		const socketCheck = await fetch(`http://localhost:2400/check_lobby/${data.lobbyID}`);
-
-		if (socketCheck.status != 200) {
-			console.log('SOCKET NOT FOUND', socketCheck.status);
-			return false;
-		}
-
-		const socket = io(`ws://localhost:3000/${data.lobbyID}`);
-		console.log(socket.connected);
-		socket.on('connect', () => {
-			console.log('Successfully connected to socket');
-		});
-
-		socket.on('messages', (messages: any) => {
-			console.log('received msg', JSON.stringify(messages), x++);
-			content = JSON.stringify(messages);
-		});
-
-		return true;
-	};
+	// const socket = io(`ws://localhost:3000/${data.lobbyID}`);
 
 	let haveSocketPromise = (async () => {
 		return true;
