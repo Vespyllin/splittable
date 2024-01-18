@@ -9,32 +9,41 @@
 
 	const currencyRegex = /^[0-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
 
-	export let name: string;
-	export let total: string;
-	export let quantity: string;
-	export let price: string;
+	export let entryData: {
+		name: string;
+		total: string;
+		quantity: string;
+		price: string;
+	} = {
+		name: '',
+		total: '',
+		quantity: '',
+		price: ''
+	};
+
+	let { name, total, quantity, price } = entryData;
+
+	$: {
+		entryData = {
+			name,
+			total,
+			quantity,
+			price
+		};
+	}
 
 	export let buttonText: string;
 
 	export let submitCallback: ((e: any) => void) | ((e: any) => Promise<void>);
 	export { submitCallback as onSubmit };
 
-	const validatePrice = (event: any) => {
-		const value: string | null | undefined = event.target.value;
-		if (!value || isNaN(parseFloat(value))) return;
-		if (!currencyRegex.test(value)) price = value.substring(0, value.length - 1);
-	};
+	const validateCurrency = (value: string) => {
+		const decimal = value.indexOf('.');
+		const correctLength =
+			decimal > -1 ? Math.min(2, value.length - decimal) + decimal + 1 : value.length;
+		if (!currencyRegex.test(value)) value = value.substring(0, correctLength);
 
-	const validateTotal = (event: any) => {
-		const value: string | null | undefined = event.target.value;
-		if (!value || isNaN(parseFloat(value))) return;
-		if (!currencyRegex.test(value)) total = value.substring(0, value.length - 1);
-	};
-
-	const validateQuantity = (event: any) => {
-		const value: string | null | undefined = event.target.value;
-		if (!value) return;
-		quantity = `${parseInt(value)}`;
+		return padDecimal(value);
 	};
 
 	const padDecimal = (value: string) => {
@@ -63,10 +72,8 @@
 		placeholder="Item Total"
 		type="number"
 		bind:value={total}
-		on:input={validateTotal}
 		on:change={() => {
-			total = padDecimal(total);
-
+			total = validateCurrency(total);
 			if (quantity) {
 				price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
 			} else if (price) quantity = padDecimal(`${round(parseFloat(total) / parseInt(price))}`);
@@ -76,8 +83,8 @@
 		placeholder="# Ordered"
 		type="number"
 		bind:value={quantity}
-		on:input={validateQuantity}
 		on:change={() => {
+			quantity = `${parseInt(quantity)}`;
 			if (price) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
 			else if (total) price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
 		}}
@@ -86,9 +93,8 @@
 		placeholder="Item Price"
 		type="number"
 		bind:value={price}
-		on:input={validatePrice}
 		on:change={() => {
-			price = padDecimal(price);
+			price = validateCurrency(price);
 			if (quantity) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
 			else if (total) quantity = padDecimal(`${round(parseFloat(total) * parseInt(price))}`);
 		}}

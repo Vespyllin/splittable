@@ -5,6 +5,7 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import type { ReceiptEntry } from '$lib/types/state';
 
+	let username: string;
 	let lobbyName: string;
 	let data: ReceiptEntry[] = [];
 </script>
@@ -14,7 +15,7 @@
 
 	<Separator class="my-3" />
 
-	<CreateLobbyForm bind:lobbyName bind:data />
+	<CreateLobbyForm bind:username bind:lobbyName bind:data />
 
 	<Footer />
 </div>

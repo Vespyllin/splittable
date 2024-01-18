@@ -1,8 +1,9 @@
 <script lang="ts">
-	import Input from '$lib/components/ui/input/input.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import Label from './ui/label/label.svelte';
 
+	import LobbyInput from './lobbyInput.svelte';
 	import ItemEntry from '$lib/components/itemEntry.svelte';
 
 	import { cn } from '$lib/utils';
@@ -11,19 +12,34 @@
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
-	export let submitCallback: ((e: any) => void) | ((e: any) => Promise<void>) = () => {
-		console.log('TODO: create lobby submit');
-	};
-	export { submitCallback as onSubmit };
-
 	let isLoading = false;
 
-	let name: string;
-	let total: string;
-	let quantity: string;
-	let price: string;
+	let req: Promise<Response> | null = null;
+
+	const onSubmit = () => {
+		req = fetch('http://localhost:2400/create_lobby', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		});
+	};
+
+	let entry: {
+		name: string;
+		total: string;
+		quantity: string;
+		price: string;
+	} = {
+		name: '',
+		total: '',
+		quantity: '',
+		price: ''
+	};
 
 	export let lobbyName: string;
+	export let username: string;
 	export let data: ReceiptEntry[];
 </script>
 
@@ -32,37 +48,17 @@
 		<h1 class="text-2xl font-bold tracking-tight">Create a Lobby</h1>
 	</div>
 
-	<div class="grid w-full gap-2">
-		<Input
-			id="username"
-			placeholder="Samwel"
-			type="text"
-			autocapitalize="none"
-			autocorrect="off"
-			disabled={isLoading}
-		/>
-		<Input
-			id="lobby"
-			placeholder="Ta' Mattea"
-			type="text"
-			autocapitalize="none"
-			autocorrect="off"
-			disabled={isLoading}
-			bind:value={lobbyName}
-		/>
-	</div>
+	<LobbyInput class="grid w-full gap-2" bind:username bind:lobbyName />
 
 	<Separator class="mx-auto my-3 h-[2px] w-[75%]" />
 
 	<form class="mb-5 flex w-full flex-col border-b-2 pb-3">
+		<Label class="text-md mb-1">Receipt Items</Label>
 		<ItemEntry
-			bind:name
-			bind:quantity
-			bind:price
-			bind:total
+			bind:entryData={entry}
 			buttonText="Add Item"
 			onSubmit={() => {
-				data.push({ name, total, quantity, price });
+				data.push(entry);
 				data = data;
 			}}
 		/>
@@ -74,10 +70,7 @@
 				<Separator class="mx-auto my-2 w-[75%] bg-primary" />
 			{/if}
 			<ItemEntry
-				bind:name={item.name}
-				bind:quantity={item.quantity}
-				bind:price={item.price}
-				bind:total={item.total}
+				bind:entryData={item}
 				buttonText="Remove"
 				onSubmit={() => (data = data.toSpliced(idx, 1))}
 			/>
@@ -85,6 +78,6 @@
 	</div>
 
 	<div class="absolute bottom-10 left-0 flex h-fit w-full justify-center">
-		<Button class="h-12 w-[95%] text-lg" on:click={submitCallback}>Create Lobby</Button>
+		<Button class="h-12 w-[95%] text-lg" on:click={onSubmit}>Create Lobby</Button>
 	</div>
 </div>
