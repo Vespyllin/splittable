@@ -8,8 +8,11 @@
 	import type { Lobby } from '$lib/types/state';
 
 	import { io } from 'socket.io-client';
+	import ContributionEntry from '$lib/components/contributionEntry.svelte';
 
 	export let data;
+
+	data.lobbyID;
 
 	// TODO: import username store, set self field to that
 	// TODO: set handler for onconnect server emit to update contributor data
@@ -37,6 +40,19 @@
 			}
 		]
 	};
+
+	let Euro = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'EUR'
+	});
+
+	state.entries = state.entries.map((v) => {
+		return {
+			...v,
+			price: Euro.format(parseFloat(v.price)),
+			total: Euro.format(parseFloat(v.total))
+		};
+	});
 
 	// const socket = io(`ws://localhost:3000/${data.lobbyID}`);
 
@@ -71,32 +87,7 @@
 
 			<!-- TODO: Wrap in dialog for contribution selection and detailed view -->
 			{#each state.entries as entry, idx}
-				<div class="my-1 flex h-fit flex-col p-2">
-					<div class="grid h-auto w-full grid-cols-11 gap-2">
-						<div class="col-span-5 border-b-2 pl-1">{entry.name}</div>
-						<div class="col-span-2 border-b-2 pl-1">{entry.quantity}</div>
-						<!-- TODO: Format intl -->
-						<div class="col-span-4 border-b-2 pl-1">{entry.price}</div>
-					</div>
-
-					<div class="mt-2 flex border-b-2">
-						<div class="py-auto no-scrollbar justify-even my-auto flex w-full pl-1">
-							{#if entry.contributors.length == 0}
-								<p class="text-muted-foreground">no contributors</p>
-							{:else}
-								{#each entry.contributors as contributor, idx}
-									<div>
-										<div class="tracking-tight">
-											{contributor.contributorId}:
-											<span class="text-primary">{contributor.contribution}</span
-											>{#if idx != entry.contributors.length - 1}<span class="pr-1">,</span>{/if}
-										</div>
-									</div>
-								{/each}
-							{/if}
-						</div>
-					</div>
-				</div>
+				<ContributionEntry {entry} />
 				{#if state.entries.length - 1 != idx}
 					<Separator class="m-1 mx-auto w-[75%] bg-primary" />
 				{/if}

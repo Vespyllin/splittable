@@ -1,6 +1,6 @@
 export type ReceiptEntry = { name: string; total: string; quantity: string; price: string };
 
-export type Entry = ReceiptEntry & {
+export type ContributionEntry = ReceiptEntry & {
 	contributors: { contributorId: string; contribution: number }[];
 };
 
@@ -9,5 +9,5 @@ export type Lobby = {
 
 	contributors: string[];
 
-	entries: Entry[];
+	entries: ContributionEntry[];
 };

@@ -3,6 +3,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	import { cn } from '$lib/utils';
+	import { Label } from './ui/label';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
@@ -31,8 +32,6 @@
 			price
 		};
 	}
-
-	export let buttonText: string;
 
 	export let submitCallback: ((e: any) => void) | ((e: any) => Promise<void>);
 	export { submitCallback as onSubmit };
@@ -66,45 +65,51 @@
 	};
 </script>
 
-<div class={cn('grid grid-cols-3 gap-2', className)}>
-	<Input class="col-span-2" placeholder="Item Name" bind:value={name} />
-	<Input
-		placeholder="Item Total"
-		type="number"
-		bind:value={total}
-		on:change={() => {
-			total = validateCurrency(total);
-			if (quantity) price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
-		}}
-	/>
-	<Input
-		placeholder="# Ordered"
-		type="number"
-		bind:value={quantity}
-		on:change={() => {
-			quantity = `${parseInt(quantity)}`;
-			if (price) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
-			else if (total) price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
-		}}
-	/>
-	<Input
-		placeholder="Item Price"
-		type="number"
-		bind:value={price}
-		on:change={() => {
-			price = validateCurrency(price);
-			if (quantity) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
-		}}
-	/>
+<div class={cn('grid grid-cols-6 gap-2', className)}>
+	<Input class="col-span-5" placeholder="Item Name" bind:value={name} />
+	<!-- TODO: Trash Icon -->
 	<Button
 		type="reset"
 		on:click={(e) => {
 			submitCallback(e);
-
 			name = '';
 			total = '';
 			quantity = '';
 			price = '';
-		}}>{buttonText}</Button
+		}}>-</Button
 	>
+	<div class="col-span-2">
+		<Input
+			placeholder="Quantity"
+			type="number"
+			bind:value={quantity}
+			on:change={() => {
+				quantity = `${parseInt(quantity)}`;
+				if (price) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
+				else if (total) price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
+			}}
+		/>
+	</div>
+	<div class="col-span-2">
+		<Input
+			placeholder="Unit Price"
+			type="number"
+			bind:value={price}
+			on:change={() => {
+				price = validateCurrency(price);
+				if (quantity) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
+			}}
+		/>
+	</div>
+	<div class="col-span-2">
+		<Input
+			placeholder="Total"
+			type="number"
+			bind:value={total}
+			on:change={() => {
+				total = validateCurrency(total);
+				if (quantity) price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
+			}}
+		/>
+	</div>
 </div>

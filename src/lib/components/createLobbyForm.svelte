@@ -14,6 +14,7 @@
 
 	let isLoading = false;
 
+	// TODO: If invalid req, inline style red border and inline a placeholder with the error message
 	let req: Promise<Response> | null = null;
 
 	const onSubmit = () => {
@@ -26,21 +27,9 @@
 		});
 	};
 
-	let entry: {
-		name: string;
-		total: string;
-		quantity: string;
-		price: string;
-	} = {
-		name: '',
-		total: '',
-		quantity: '',
-		price: ''
-	};
-
-	export let lobbyName: string;
-	export let username: string;
-	export let data: ReceiptEntry[];
+	let lobbyName: string = '';
+	let username: string = '';
+	let data: ReceiptEntry[] = [];
 </script>
 
 <div class={cn('flex w-full grow flex-col items-center overflow-y-hidden', className)}>
@@ -48,32 +37,34 @@
 		<h1 class="text-2xl font-bold tracking-tight">Create a Lobby</h1>
 	</div>
 
-	<LobbyInput class="grid w-full gap-2" bind:username bind:lobbyName />
+	<LobbyInput class="flex w-full flex-col space-y-2" bind:username bind:lobbyName />
 
 	<Separator class="mx-auto my-3 h-[2px] w-[75%]" />
 
-	<form class="mb-5 flex w-full flex-col border-b-2 pb-3">
-		<Label class="text-md mb-1">Receipt Items</Label>
-		<ItemEntry
-			bind:entryData={entry}
-			buttonText="Add Item"
-			onSubmit={() => {
-				data.push(entry);
-				data = data;
-			}}
-		/>
-	</form>
+	<div class="mb-5 flex w-full items-center border-b-2 pb-3">
+		<Label class="mb-1 text-lg">Receipt Items</Label>
+		<Button
+			class="ml-auto h-8 w-12"
+			on:click={() => {
+				data = [
+					...data,
+					{
+						name: '',
+						total: '',
+						quantity: '',
+						price: ''
+					}
+				];
+			}}>+</Button
+		>
+	</div>
 
 	<div class="h-[50%] w-full flex-col overflow-y-scroll">
 		{#each data as item, idx}
 			{#if idx != 0}
-				<Separator class="mx-auto my-2 w-[75%] bg-primary" />
+				<Separator class="mx-auto my-2 w-[75%]" />
 			{/if}
-			<ItemEntry
-				bind:entryData={item}
-				buttonText="Remove"
-				onSubmit={() => (data = data.toSpliced(idx, 1))}
-			/>
+			<ItemEntry bind:entryData={item} onSubmit={() => (data = data.toSpliced(idx, 1))} />
 		{/each}
 	</div>
 

@@ -39,9 +39,9 @@
 	<Separator class="my-2 w-full " />
 
 	<form on:submit={onSubmit} class="w-full">
-		<div class="mt-1 grid gap-2">
-			<LobbyInput class="grid gap-2" bind:username bind:lobbyName />
-			<Button class="mt-1" type="submit" disabled={isLoading}>Join Lobby</Button>
+		<div class="mt-1 space-y-2">
+			<LobbyInput class="flex w-full flex-col space-y-2" bind:username bind:lobbyName />
+			<Button class="mt-1 w-full" type="submit" disabled={isLoading}>Join Lobby</Button>
 		</div>
 	</form>
 </div>
