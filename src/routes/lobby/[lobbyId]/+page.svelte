@@ -42,7 +42,7 @@
 	let x = 0;
 	const setSocket = async () => {
 		console.log('SETTING SOCKET', data.lobbyID);
-		const socketCheck = await fetch(`http://localhost:5173/check_lobby/${data.lobbyID}`);
+		const socketCheck = await fetch(`http://localhost:2400/check_lobby/${data.lobbyID}`);
 
 		if (socketCheck.status != 200) {
 			console.log('SOCKET NOT FOUND', socketCheck.status);
@@ -66,7 +66,6 @@
 	let haveSocketPromise = (async () => {
 		return true;
 	})();
-	// setSocket();
 </script>
 
 <div class="flex h-screen w-screen flex-col p-8">
