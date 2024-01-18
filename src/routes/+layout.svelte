@@ -7,6 +7,6 @@
 	<title>BillSplitter.Svelte</title>
 </svelte:head>
 
-<main class="h-auto">
+<main class="h-screen">
 	<slot />
 </main>
