@@ -60,6 +60,11 @@
 	</div>
 
 	<div class="h-[50%] w-full flex-col overflow-y-scroll">
+		{#if data.length == 0}
+			<div class="flex items-center px-16 py-2 text-muted-foreground">
+				<h1 class="text-lg">🤔 You can't split a bill with no items...</h1>
+			</div>
+		{/if}
 		{#each data as item, idx}
 			{#if idx != 0}
 				<Separator class="mx-auto my-2 w-[75%]" />

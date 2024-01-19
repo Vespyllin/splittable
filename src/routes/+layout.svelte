@@ -5,8 +5,9 @@
 
 <svelte:head>
 	<title>BillSplitter.Svelte</title>
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
 </svelte:head>
 
-<main class="h-screen">
+<main class="h-lvh">
 	<slot />
 </main>

@@ -8,7 +8,7 @@
 </script>
 
 <div class="flex h-full w-full flex-col p-8">
-	<LoveSpiteHeader class="mb-10 mt-5 h-[25%] justify-center" />
+	<LoveSpiteHeader class="mb-10 mt-5 h-48 justify-center" />
 
 	<JoinLobbyForm bind:isLoading />
 

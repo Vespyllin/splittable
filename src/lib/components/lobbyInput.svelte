@@ -18,7 +18,7 @@
 >
 	<Input
 		id="username"
-		placeholder="username"
+		placeholder="nickname"
 		type="text"
 		autocapitalize="none"
 		autocorrect="off"
@@ -27,7 +27,7 @@
 	/>
 	<Input
 		id="lobby"
-		placeholder="lobby id"
+		placeholder="lobby name"
 		type="text"
 		autocapitalize="none"
 		autocorrect="off"
