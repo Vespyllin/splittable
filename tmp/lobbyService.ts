@@ -36,6 +36,8 @@ export const LobbyService = (wss: Server) => {
 		console.log('creating', lobbyName);
 		const expires = new Date().getTime() + timeout;
 
+		if (lobbies.get(lobbyName)) return false;
+
 		lobbies.set(lobbyName, {
 			expires: expires,
 			users: ['testuser'],

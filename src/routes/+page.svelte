@@ -1,5 +1,4 @@
 <script lang="ts">
-	import JoinLobbyForm from '$lib/components/joinLobbyForm.svelte';
 	import LoveSpiteHeader from '$lib/components/loveSpiteHeader.svelte';
 	import Footer from '$lib/components/footer.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -36,10 +35,12 @@
 			isFetching = false;
 		}
 	};
+
+	const buttonClass = 'mx-auto mt-1 h-10 w-[97.5%] text-lg';
 </script>
 
 <!-- TODO: Make header smaller, increase size of other elements -->
-<div class="flex h-full w-full flex-col p-8">
+<div class="flex h-full w-full flex-col p-8 pb-2">
 	<LoveSpiteHeader class="h-[20%] w-full justify-center " />
 
 	<Separator class="my-5"></Separator>
@@ -53,28 +54,24 @@
 		<Separator class="my-2 w-[75%]" />
 
 		<form on:submit={onSubmit} class="w-full">
-			<div class="mt-1 space-y-2">
+			<div class="mt-1 flex flex-col justify-center space-y-2">
 				<LobbyInput
 					class="flex w-full flex-col space-y-2"
 					bind:error
 					bind:username
 					bind:lobbyName
 				/>
-				<Button class="mx-auto mt-1 h-auto w-full text-lg " type="submit" disabled={isFetching}>
-					Join Lobby
-				</Button>
+				<Button class={buttonClass} type="submit" disabled={isFetching}>Join Lobby</Button>
 			</div>
 		</form>
 	</div>
 
 	<div class="my-2 flex-col space-y-2 text-center">
 		<h1 class="text-2xl tracking-tight">Or</h1>
+		<a href="/create">
+			<Button disabled={isFetching} class={buttonClass}>Create Your Own Lobby</Button>
+		</a>
 	</div>
-	<a href="/create">
-		<Button disabled={isFetching} class="mx-auto mt-1 h-auto w-full text-lg "
-			>Create Your Own Lobby</Button
-		>
-	</a>
 
-	<Footer />
+	<Footer class="mt-auto" />
 </div>

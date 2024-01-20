@@ -16,7 +16,7 @@ const main = () => {
 	const wss = new Server(3000, { cors: { origin: '*' } });
 	const lobbyService = LobbyService(wss);
 
-	app.get('/valid_join/:lobbyName/:username', async (req, res: Response) => {
+	app.get('/validate_join/:lobbyName/:username', async (req, res: Response) => {
 		const { lobbyName, username } = req.params;
 
 		return res
@@ -29,12 +29,12 @@ const main = () => {
 	app.post('/create_lobby', (req, res) => {
 		const { lobbyName, initialState } = req.body;
 
-		if (!lobbyName || !initialState) return res.sendStatus(400);
+		if (!lobbyName || !initialState) return res.sendStatus(500);
 
 		// TODO: validation for initialState
 		const lobbyRes = lobbyService.createLobby(lobbyName, initialState);
 
-		res.json({ valid: lobbyRes }).status(200);
+		res.json({ created: lobbyRes }).status(200);
 	});
 
 	lobbyService.createLobby('abc', []);

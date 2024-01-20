@@ -7,7 +7,7 @@ const LobbyService = (wss) => {
         const lobby = lobbies.get(lobbyName);
         if (!lobby)
             return 'NoLobby';
-        if (!!lobby.users.find((existingUsername) => existingUsername == username))
+        if (!!lobby.users.find((v) => v == username))
             return 'BadUsername';
         return 'Valid';
     };
@@ -15,6 +15,8 @@ const LobbyService = (wss) => {
         // TODO: Check existing lobby
         console.log('creating', lobbyName);
         const expires = new Date().getTime() + timeout;
+        if (lobbies.get(lobbyName))
+            return false;
         lobbies.set(lobbyName, {
             expires: expires,
             users: ['testuser'],

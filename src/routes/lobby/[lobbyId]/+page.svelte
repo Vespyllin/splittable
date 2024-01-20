@@ -1,14 +1,13 @@
 <script lang="ts">
+	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
+
 	import MinimalHeader from '$lib/components/header.svelte';
 	import Footer from '$lib/components/footer.svelte';
-	import Loading from '$lib/components/loading.svelte';
-
-	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import ContributionEntry from '$lib/components/contributionEntry.svelte';
 
 	import type { Lobby } from '$lib/types/state';
-
 	import { io } from 'socket.io-client';
-	import ContributionEntry from '$lib/components/contributionEntry.svelte';
 
 	export let data;
 
@@ -67,11 +66,11 @@
 	<Separator class="my-3" />
 
 	{#await haveSocketPromise}
-		<Loading />
+		<Skeleton class="h-6 w-full" />
 	{:then haveSocket}
 		{#if haveSocket}
-			<h1>Lobby members:</h1>
-			<div class="my-2 flex w-full flex-wrap border-l-2">
+			<h1 class="text-xl">Lobby members</h1>
+			<div class="my-2 flex w-full flex-wrap">
 				{#each state.contributors as contributor, idx}
 					<p class="mx-1 text-primary">
 						{contributor}{#if idx != state.contributors.length - 1}<span class="text-foreground"
@@ -81,17 +80,16 @@
 				{/each}
 			</div>
 
-			<div class="flex justify-center">
-				<Separator class="my-2 w-full" />
-			</div>
-
+			<h1 class="text-xl">Entries</h1>
 			<!-- TODO: Wrap in dialog for contribution selection and detailed view -->
-			{#each state.entries as entry, idx}
-				<ContributionEntry {entry} />
-				{#if state.entries.length - 1 != idx}
-					<Separator class="m-1 mx-auto w-[75%] bg-primary" />
-				{/if}
-			{/each}
+			<div class="flew grow flex-col">
+				{#each state.entries as entry, idx}
+					<ContributionEntry {entry} />
+					{#if state.entries.length - 1 != idx}
+						<Separator class="m-1 mx-auto my-2 w-[75%] bg-primary" />
+					{/if}
+				{/each}
+			</div>
 		{:else}
 			<p>Not Found</p>
 		{/if}
@@ -101,5 +99,5 @@
 
 	<!-- {content} -->
 
-	<Footer />
+	<Footer class="my-auto" />
 </div>

@@ -63,10 +63,14 @@
 		if (isNaN(roundedValue)) return value;
 		return roundedValue;
 	};
+
+	const p = (v: any) => {
+		return v * 1;
+	};
 </script>
 
 <div class={cn('grid grid-cols-6 gap-2', className)}>
-	<Input class="col-span-5" placeholder="Item Name" bind:value={name} />
+	<Input class="col-span-5 text-lg" placeholder="Item Name" bind:value={name} />
 	<!-- TODO: Trash Icon -->
 	<Button
 		type="reset"
@@ -82,22 +86,24 @@
 		<Input
 			placeholder="Quantity"
 			type="number"
+			class="text-lg"
 			bind:value={quantity}
 			on:change={() => {
-				quantity = `${parseInt(quantity)}`;
-				if (price) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
-				else if (total) price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
+				quantity = `${p(quantity)}`;
+				if (price) total = padDecimal(`${round(p(price) * p(quantity))}`);
+				else if (total) price = padDecimal(`${round(p(total) / p(quantity))}`);
 			}}
 		/>
 	</div>
 	<div class="col-span-2">
 		<Input
-			placeholder="Unit Price"
+			placeholder="Price"
 			type="number"
+			class="text-lg"
 			bind:value={price}
 			on:change={() => {
 				price = validateCurrency(price);
-				if (quantity) total = padDecimal(`${round(parseFloat(price) * parseInt(quantity))}`);
+				if (quantity) total = padDecimal(`${round(p(price) * p(quantity))}`);
 			}}
 		/>
 	</div>
@@ -105,10 +111,11 @@
 		<Input
 			placeholder="Total"
 			type="number"
+			class="text-lg"
 			bind:value={total}
 			on:change={() => {
 				total = validateCurrency(total);
-				if (quantity) price = padDecimal(`${round(parseFloat(total) / parseInt(quantity))}`);
+				if (quantity) price = padDecimal(`${round(p(total) / p(quantity))}`);
 			}}
 		/>
 	</div>

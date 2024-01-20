@@ -27,7 +27,7 @@ const main = () => {
     app.use((0, cors_1.default)());
     const wss = new socket_io_1.Server(3000, { cors: { origin: '*' } });
     const lobbyService = (0, LobbyService_1.LobbyService)(wss);
-    app.get('/valid_join/:lobbyName/:username', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    app.get('/validate_join/:lobbyName/:username', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { lobbyName, username } = req.params;
         return res
             .json({
@@ -38,10 +38,10 @@ const main = () => {
     app.post('/create_lobby', (req, res) => {
         const { lobbyName, initialState } = req.body;
         if (!lobbyName || !initialState)
-            return res.sendStatus(400);
+            return res.sendStatus(500);
         // TODO: validation for initialState
         const lobbyRes = lobbyService.createLobby(lobbyName, initialState);
-        res.json({ valid: lobbyRes }).status(200);
+        res.json({ created: lobbyRes }).status(200);
     });
     lobbyService.createLobby('abc', []);
     // app.use(handler);

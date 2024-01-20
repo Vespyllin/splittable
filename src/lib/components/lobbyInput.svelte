@@ -38,7 +38,7 @@
 	// TODO: Input validation
 </script>
 
-<div class={cn('flex', className)} on:change={() => {}}>
+<div class={cn('flex flex-col space-y-2', className)} on:change={() => {}}>
 	<Input
 		id="username"
 		placeholder="nickname"
