@@ -38,16 +38,16 @@
 
 <div class={cn('flex w-full flex-col items-center justify-center', className)}>
 	<div class="flex flex-col space-y-2 text-center">
-		<h1 class="text-3xl font-bold tracking-tight">Join a Lobby</h1>
+		<h1 class="text-3xl font-semibold tracking-tight">Join a Lobby</h1>
 		<p class="text-lg text-muted-foreground">Join an existing lobby and get splitting 🪓</p>
 	</div>
 
 	<Separator class="my-2 w-full " />
 
 	<form on:submit={onSubmit} class="w-full">
-		<div class="mt-1 space-y-2">
+		<div class="mt-1 flex flex-col space-y-2">
 			<LobbyInput class="flex w-full flex-col space-y-2" bind:error bind:username bind:lobbyName />
-			<Button class="mt-1 h-auto w-full text-xl" type="submit" disabled={isFetching}
+			<Button class="mx-auto mt-1 h-auto w-[95%] text-xl" type="submit" disabled={isFetching}
 				>Join Lobby</Button
 			>
 		</div>

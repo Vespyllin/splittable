@@ -46,7 +46,7 @@
 		autocapitalize="none"
 		autocorrect="off"
 		disabled={isLoading}
-		class={cn('text-lg', error === 'BadUsername' ? 'border-red-600' : '')}
+		class={cn('h-auto text-lg', error === 'BadUsername' ? 'border-red-600' : '')}
 		bind:value={username}
 	/>
 	<Input
@@ -56,7 +56,7 @@
 		autocapitalize="none"
 		autocorrect="off"
 		disabled={isLoading}
-		class={cn('text-lg', error === 'NoLobby' ? 'border-red-600' : '')}
+		class={cn('h-auto text-lg', error === 'NoLobby' ? 'border-red-600' : '')}
 		bind:value={lobbyName}
 	/>
 

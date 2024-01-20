@@ -7,9 +7,9 @@
 </script>
 
 <div class={cn('flex items-center', className)}>
-	<img src="./bill.png" alt="" class="left-0 h-full invert" />
+	<img src="./bill.png" alt="" class="left-0 h-[100%] invert" />
 	<div class="flex-col">
-		<h1 class="ml-5 mt-auto w-[11rem] text-center text-3xl text-primary">Splittable</h1>
+		<h1 class="ml-5 mt-auto w-[11rem] text-center text-4xl font-bold text-primary">Splittable</h1>
 
 		<Separator class="mx-auto my-1 w-[65%]" />
 
