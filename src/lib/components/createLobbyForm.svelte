@@ -7,7 +7,7 @@
 	import ItemEntry from '$lib/components/itemEntry.svelte';
 
 	import { cn } from '$lib/utils';
-	import type { ReceiptEntry } from '$lib/types/state';
+	import type { Error, ReceiptEntry } from '$lib/types/state';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
@@ -17,7 +17,14 @@
 	// TODO: If invalid req, inline style red border and inline a placeholder with the error message
 	let req: Promise<Response> | null = null;
 
+	let error: Error[] = [];
+
+	let username: string | undefined = undefined;
+	let lobbyName: string | undefined = undefined;
+
 	const onSubmit = () => {
+		console.log('createLobby onSubmit');
+
 		req = fetch('http://localhost:2400/create_lobby', {
 			method: 'POST',
 			headers: {
@@ -27,9 +34,8 @@
 		});
 	};
 
-	let lobbyName: string = '';
-	let username: string = '';
 	let data: ReceiptEntry[] = [];
+	let x = 0;
 </script>
 
 <div class={cn('flex w-full grow flex-col items-center overflow-y-hidden', className)}>
@@ -37,7 +43,7 @@
 		<h1 class="text-2xl font-bold tracking-tight">Create a Lobby</h1>
 	</div>
 
-	<LobbyInput class="flex w-full flex-col space-y-2" bind:username bind:lobbyName />
+	<LobbyInput class="flex w-full flex-col space-y-2" bind:error bind:username bind:lobbyName />
 
 	<Separator class="mx-auto my-3 h-[2px] w-[75%]" />
 
@@ -46,31 +52,30 @@
 		<Button
 			class="ml-auto h-8 w-12"
 			on:click={() => {
-				data = [
-					...data,
-					{
-						name: '',
-						total: '',
-						quantity: '',
-						price: ''
-					}
-				];
+				//!!! DO NOT TOUCH !!!
+				console.log(data);
+				data = [...data.reverse(), { name: ``, total: '', quantity: '', price: '' }].reverse();
 			}}>+</Button
 		>
 	</div>
 
-	<div class="h-[50%] w-full flex-col overflow-y-scroll">
-		{#if data.length == 0}
-			<div class="flex items-center px-16 py-2 text-muted-foreground">
-				<h1 class="text-lg">🤔 You can't split a bill with no items...</h1>
-			</div>
-		{/if}
-		{#each data as item, idx}
-			{#if idx != 0}
-				<Separator class="mx-auto my-2 w-[75%]" />
+	<div class="h-[50%] w-full overflow-auto">
+		<div>
+			{#if data.length == 0}
+				<div class="flex items-center px-16 py-2 text-muted-foreground">
+					<h1 class="text-lg">🤔 You can't split a bill with no items...</h1>
+				</div>
 			{/if}
-			<ItemEntry bind:entryData={item} onSubmit={() => (data = data.toSpliced(idx, 1))} />
-		{/each}
+			{#key data.length}
+				{#each data as term, idx}
+					{#if idx != 0}
+						<Separator class="mx-auto my-2 w-[75%]" />
+					{/if}
+
+					<ItemEntry bind:entryData={term} onSubmit={() => (data = data.toSpliced(idx, 1))} />
+				{/each}
+			{/key}
+		</div>
 	</div>
 
 	<div class="absolute bottom-10 left-0 flex h-fit w-full justify-center">

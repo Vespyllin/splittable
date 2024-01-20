@@ -5,28 +5,39 @@
 	import LobbyInput from './lobbyInput.svelte';
 
 	import { cn } from '$lib/utils';
+	import type { Error } from '$lib/types/state';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
-	export let isLoading = false;
-	export let submitCallback: ((e: any) => void) | ((e: any) => Promise<void>);
-	export { submitCallback as onSubmit };
+	export let isFetching = false;
 
-	let username = '';
-	let lobbyName = '';
+	let error: Error[] = [];
+
+	let username: string | undefined = undefined;
+	let lobbyName: string | undefined = undefined;
 
 	const onSubmit = async (event: any) => {
-		console.log('values: ', username, lobbyName);
+		console.log('joinLobby onSubmit');
 		event.target.reset();
 
-		isLoading = true;
+		isFetching = true;
 
-		if (submitCallback) await submitCallback(event);
-
-		setTimeout(() => {
-			isLoading = false;
-		}, 1000);
+		try {
+			const validLobbyRes = await fetch(`http://localhost:3000/${lobbyName}/${username}`);
+			const resJSON = await validLobbyRes.json();
+			if (!validLobbyRes.ok) {
+				error = ['Server'];
+			} else {
+				error = [];
+				if (resJSON.lobby) error.push('Lobby');
+				if (resJSON.username) error.push('Username');
+			}
+		} catch (e) {
+			error = ['Server'];
+		} finally {
+			isFetching = false;
+		}
 	};
 </script>
 
@@ -40,8 +51,8 @@
 
 	<form on:submit={onSubmit} class="w-full">
 		<div class="mt-1 space-y-2">
-			<LobbyInput class="flex w-full flex-col space-y-2" bind:username bind:lobbyName />
-			<Button class="mt-1 w-full" type="submit" disabled={isLoading}>Join Lobby</Button>
+			<LobbyInput class="flex w-full flex-col space-y-2" bind:error bind:username bind:lobbyName />
+			<Button class="mt-1 w-full" type="submit" disabled={isFetching}>Join Lobby</Button>
 		</div>
 	</form>
 </div>

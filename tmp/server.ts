@@ -19,10 +19,13 @@ const main = () => {
 	app.get('/valid_join/:lobbyName/:username', async (req, res: Response) => {
 		const { lobbyName, username } = req.params;
 
-		if (!lobbyName || !username) return res.sendStatus(400);
-
-		const lobbyRes = lobbyService.validateJoin(lobbyName, username);
-		res.json({ valid: lobbyRes }).status(200);
+		return res
+			.json({
+				valid: (!lobbyName || !username) && lobbyService.validateJoin(lobbyName, username),
+				lobby: !lobbyName,
+				username: !username
+			})
+			.status(200);
 	});
 
 	app.post('/create_lobby', (req, res) => {
