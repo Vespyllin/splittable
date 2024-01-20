@@ -21,9 +21,7 @@ const main = () => {
 
 		return res
 			.json({
-				valid: (!lobbyName || !username) && lobbyService.validateJoin(lobbyName, username),
-				lobby: !lobbyName,
-				username: !username
+				valid: lobbyService.validateJoin(lobbyName, username)
 			})
 			.status(200);
 	});

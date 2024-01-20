@@ -1,5 +1,7 @@
 import { Namespace, Server } from 'socket.io';
 
+type Validation = 'NoLobby' | 'BadUsername' | 'Valid';
+
 type ReceiptEntry = { name: string; total: string; quantity: string; price: string };
 
 type EntryContribution = ReceiptEntry & {
@@ -15,11 +17,14 @@ type socketState = {
 export const LobbyService = (wss: Server) => {
 	const lobbies: Map<string, socketState> = new Map();
 
-	const validateJoin = (lobbyName: string, username: string) => {
+	const validateJoin = (lobbyName: string, username: string): Validation => {
 		const lobby = lobbies.get(lobbyName);
-		if (!lobby) return false;
 
-		return !lobby.users.find((existingUsername) => existingUsername == username);
+		if (!lobby) return 'NoLobby';
+
+		if (!!lobby.users.find((v) => v == username)) return 'BadUsername';
+
+		return 'Valid';
 	};
 
 	const createLobby = (
@@ -33,7 +38,7 @@ export const LobbyService = (wss: Server) => {
 
 		lobbies.set(lobbyName, {
 			expires: expires,
-			users: [],
+			users: ['testuser'],
 			state: initialState.map((val) => {
 				return { ...val, contributions: [] };
 			})

@@ -5,36 +5,31 @@
 	import LobbyInput from './lobbyInput.svelte';
 
 	import { cn } from '$lib/utils';
-	import type { Error } from '$lib/types/state';
+	import type { ValidationStatus } from '$lib/types/state';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
 	export let isFetching = false;
 
-	let error: Error[] = [];
+	let error: ValidationStatus;
 
 	let username: string | undefined = undefined;
 	let lobbyName: string | undefined = undefined;
 
 	const onSubmit = async (event: any) => {
-		console.log('joinLobby onSubmit');
-		event.target.reset();
-
 		isFetching = true;
 
 		try {
-			const validLobbyRes = await fetch(`http://localhost:3000/${lobbyName}/${username}`);
+			const validLobbyRes = await fetch(
+				`http://localhost:2400/valid_join/${lobbyName}/${username}`
+			);
 			const resJSON = await validLobbyRes.json();
-			if (!validLobbyRes.ok) {
-				error = ['Server'];
-			} else {
-				error = [];
-				if (resJSON.lobby) error.push('Lobby');
-				if (resJSON.username) error.push('Username');
-			}
+
+			if (!validLobbyRes.ok || !resJSON.valid) error = 'Internal';
+			else error = resJSON.valid;
 		} catch (e) {
-			error = ['Server'];
+			error = 'Internal';
 		} finally {
 			isFetching = false;
 		}

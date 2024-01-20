@@ -7,7 +7,7 @@
 	import ItemEntry from '$lib/components/itemEntry.svelte';
 
 	import { cn } from '$lib/utils';
-	import type { Error, ReceiptEntry } from '$lib/types/state';
+	import type { ValidationStatus, ReceiptEntry } from '$lib/types/state';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
@@ -17,7 +17,7 @@
 	// TODO: If invalid req, inline style red border and inline a placeholder with the error message
 	let req: Promise<Response> | null = null;
 
-	let error: Error[] = [];
+	let error: ValidationStatus;
 
 	let username: string | undefined = undefined;
 	let lobbyName: string | undefined = undefined;

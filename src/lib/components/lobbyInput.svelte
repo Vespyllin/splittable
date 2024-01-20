@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Input from '$lib/components/ui/input/input.svelte';
-	import type { Error } from '$lib/types/state';
+	import type { ValidationStatus } from '$lib/types/state';
 	import { cn } from '$lib/utils';
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -8,7 +8,7 @@
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
-	export let error: Error[];
+	export let error: ValidationStatus;
 	export let username: string = '';
 	export let lobbyName: string = '';
 
@@ -17,12 +17,23 @@
 
 	export let isLoading = false;
 
+	let errorMessage = '';
+	$: errorMessage = (() => {
+		if (!error || error === 'Valid') return '';
+
+		if (error === 'NoLobby') return 'Could not find specified lobby.';
+		else if (error === 'BadUsername') return `Username not available in lobby.`;
+
+		return 'Server is not responding. Please try again later.';
+	})();
+
 	$: {
 		$userDataStore = {
 			username,
 			lobbyName
 		};
 	}
+
 	// TODO: make fetch req, expose validationError and set it to a descriptive text to be shown on screen
 	// TODO: Input validation
 </script>
@@ -35,7 +46,7 @@
 		autocapitalize="none"
 		autocorrect="off"
 		disabled={isLoading}
-		class={error.includes('Username') ? 'border-red-600' : ''}
+		class={error === 'BadUsername' ? 'border-red-600' : ''}
 		bind:value={username}
 	/>
 	<Input
@@ -45,17 +56,9 @@
 		autocapitalize="none"
 		autocorrect="off"
 		disabled={isLoading}
-		class={error.includes('Lobby') ? 'border-red-600' : ''}
+		class={error === 'NoLobby' ? 'border-red-600' : ''}
 		bind:value={lobbyName}
 	/>
 
-	{#if error.length > 0}
-		{#if error.includes('Lobby')}
-			<p class="text-red-600">Lobby does not exist. Create a lobby by clicking the button below.</p>
-		{:else if error.includes('Username')}
-			<p class="text-red-600">Username is already taken. Pick a cooler one.</p>
-		{:else}
-			<p class="text-red-600">Server is not responding. Please try again later.</p>
-		{/if}
-	{/if}
+	<p class="text-sm text-red-600">{`${errorMessage}`}</p>
 </div>

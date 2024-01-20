@@ -1,4 +1,4 @@
-export type Error = 'Lobby' | 'Username' | 'Server';
+export type ValidationStatus = 'NoLobby' | 'BadUsername' | 'Valid' | 'Internal';
 
 export type ReceiptEntry = { name: string; total: string; quantity: string; price: string };
 

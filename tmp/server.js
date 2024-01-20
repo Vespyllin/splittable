@@ -29,10 +29,11 @@ const main = () => {
     const lobbyService = (0, LobbyService_1.LobbyService)(wss);
     app.get('/valid_join/:lobbyName/:username', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { lobbyName, username } = req.params;
-        if (!lobbyName || !username)
-            return res.sendStatus(400);
-        const lobbyRes = lobbyService.validateJoin(lobbyName, username);
-        res.json({ valid: lobbyRes }).status(200);
+        return res
+            .json({
+            valid: lobbyService.validateJoin(lobbyName, username)
+        })
+            .status(200);
     }));
     app.post('/create_lobby', (req, res) => {
         const { lobbyName, initialState } = req.body;
@@ -41,16 +42,6 @@ const main = () => {
         // TODO: validation for initialState
         const lobbyRes = lobbyService.createLobby(lobbyName, initialState);
         res.json({ valid: lobbyRes }).status(200);
-    });
-    wss.on('connect', (socket) => {
-        socket.emit('HELLO');
-    });
-    // app.post('/send_lobby', (req, res) => {
-    // 	wss.of(req.body.lobbyId).emit('messages', `message ${new Date()}`);
-    // 	res.sendStatus(200);
-    // });
-    wss.on('connection', (socket) => {
-        socket.emit('messages', "This guy's tutorial sucked so bad omg");
     });
     lobbyService.createLobby('abc', []);
     // app.use(handler);

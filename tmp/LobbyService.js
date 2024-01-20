@@ -6,8 +6,10 @@ const LobbyService = (wss) => {
     const validateJoin = (lobbyName, username) => {
         const lobby = lobbies.get(lobbyName);
         if (!lobby)
-            return false;
-        return !lobby.users.find((existingUsername) => existingUsername == username);
+            return 'NoLobby';
+        if (!!lobby.users.find((existingUsername) => existingUsername == username))
+            return 'BadUsername';
+        return 'Valid';
     };
     const createLobby = (lobbyName, initialState, timeout = 10 * 60 * 1000) => {
         // TODO: Check existing lobby
@@ -15,7 +17,7 @@ const LobbyService = (wss) => {
         const expires = new Date().getTime() + timeout;
         lobbies.set(lobbyName, {
             expires: expires,
-            users: [],
+            users: ['testuser'],
             state: initialState.map((val) => {
                 return Object.assign(Object.assign({}, val), { contributions: [] });
             })
