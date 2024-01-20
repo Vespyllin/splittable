@@ -5,7 +5,7 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 </script>
 
-<div class="flex h-screen w-screen flex-col p-8">
+<div class="flex h-full w-full flex-col p-8">
 	<MinimalHeader />
 
 	<Separator class="my-3" />

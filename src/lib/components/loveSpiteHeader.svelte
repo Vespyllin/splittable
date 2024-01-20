@@ -6,13 +6,13 @@
 	export { className as class };
 </script>
 
-<div class={cn('flex', className)}>
+<div class={cn('flex items-center', className)}>
 	<img src="./bill.png" alt="" class="left-0 h-full invert" />
 	<div class="flex-col">
-		<h1 class="ml-5 mt-auto w-[11rem] text-center text-4xl text-primary">Il-Bill Splitter</h1>
+		<h1 class="ml-5 mt-auto w-[11rem] text-center text-3xl text-primary">Splittable</h1>
 
 		<Separator class="mx-auto my-1 w-[65%]" />
 
-		<h2 class="ml-5 mt-auto w-[11rem] text-center text-3xl">Made with Love and Spite🧡</h2>
+		<h2 class="ml-5 mt-auto w-[11rem] text-center text-2xl">Made with Love and Spite</h2>
 	</div>
 </div>

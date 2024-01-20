@@ -39,7 +39,7 @@
 <div class={cn('flex w-full flex-col items-center justify-center', className)}>
 	<div class="flex flex-col space-y-2 text-center">
 		<h1 class="text-2xl font-bold tracking-tight">Join a Lobby</h1>
-		<p class="text-sm text-muted-foreground">Join an existing lobby and get splitting 🪓</p>
+		<p class="text-l text-muted-foreground">Join an existing lobby and get splitting.</p>
 	</div>
 
 	<Separator class="my-2 w-full " />
@@ -47,7 +47,9 @@
 	<form on:submit={onSubmit} class="w-full">
 		<div class="mt-1 space-y-2">
 			<LobbyInput class="flex w-full flex-col space-y-2" bind:error bind:username bind:lobbyName />
-			<Button class="mt-1 w-full" type="submit" disabled={isFetching}>Join Lobby</Button>
+			<Button class="mt-1 h-auto w-full text-xl" type="submit" disabled={isFetching}>
+				Join Lobby
+			</Button>
 		</div>
 	</form>
 </div>

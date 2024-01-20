@@ -7,16 +7,17 @@
 	let isFetching = false;
 </script>
 
-<div class="flex h-full w-full flex-col p-8">
-	<LoveSpiteHeader class="mb-10 mt-5 h-48 justify-center" />
+<!-- TODO: Make header smaller, increase size of other elements -->
+<div class="flex h-svh w-full flex-col p-8">
+	<LoveSpiteHeader class="mb-10 mt-5 h-[15%] justify-center" />
 
 	<JoinLobbyForm bind:isFetching />
 
 	<div class="my-2 flex-col space-y-2 text-center">
-		<h1 class="text-xl font-semibold tracking-tight">Or</h1>
+		<h1 class="text-2xl font-semibold tracking-tight">Or</h1>
 	</div>
 	<a href="/create">
-		<Button disabled={isFetching} class="w-full">Create Your Own Lobby</Button>
+		<Button disabled={isFetching} class="h-auto w-full text-xl">Create Your Own Lobby</Button>
 	</a>
 
 	<Footer />

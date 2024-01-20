@@ -56,7 +56,7 @@
 		autocapitalize="none"
 		autocorrect="off"
 		disabled={isLoading}
-		class={error === 'NoLobby' ? 'border-red-600' : ''}
+		class={cn('text-lg', error === 'NoLobby' ? 'border-red-600' : '')}
 		bind:value={lobbyName}
 	/>
 
