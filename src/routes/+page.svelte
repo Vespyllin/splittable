@@ -40,7 +40,9 @@
 
 <!-- TODO: Make header smaller, increase size of other elements -->
 <div class="flex h-full w-full flex-col p-8">
-	<LoveSpiteHeader class="mb-10 mt-5 h-[20%] w-full justify-center " />
+	<LoveSpiteHeader class="h-[20%] w-full justify-center " />
+
+	<Separator class="my-5"></Separator>
 
 	<div class={cn('flex w-full flex-col items-center justify-center', className)}>
 		<div class="flex flex-col space-y-2 text-center">
@@ -48,7 +50,7 @@
 			<p class="text-lg text-muted-foreground">Join an existing lobby and get splitting 🪓</p>
 		</div>
 
-		<Separator class="my-2 w-full " />
+		<Separator class="my-2 w-[75%]" />
 
 		<form on:submit={onSubmit} class="w-full">
 			<div class="mt-1 space-y-2">
@@ -58,11 +60,7 @@
 					bind:username
 					bind:lobbyName
 				/>
-				<Button
-					class="mx-auto mt-1 h-auto w-full text-lg font-semibold"
-					type="submit"
-					disabled={isFetching}
-				>
+				<Button class="mx-auto mt-1 h-auto w-full text-lg " type="submit" disabled={isFetching}>
 					Join Lobby
 				</Button>
 			</div>
@@ -73,7 +71,7 @@
 		<h1 class="text-2xl tracking-tight">Or</h1>
 	</div>
 	<a href="/create">
-		<Button disabled={isFetching} class="mx-auto mt-1 h-auto w-full text-lg font-semibold"
+		<Button disabled={isFetching} class="mx-auto mt-1 h-auto w-full text-lg "
 			>Create Your Own Lobby</Button
 		>
 	</a>
