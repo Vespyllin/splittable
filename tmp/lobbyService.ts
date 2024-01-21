@@ -1,4 +1,4 @@
-import { Namespace, Server } from 'socket.io';
+import { Server } from 'socket.io';
 
 type Validation = 'NoLobby' | 'BadUsername' | 'Valid';
 
@@ -10,7 +10,7 @@ type EntryContribution = ReceiptEntry & {
 
 type socketState = {
 	expires: number; // Timeout Unix timestamp
-	users: string[];
+	users: { name: string; socketId: string }[];
 	state: EntryContribution[];
 };
 
@@ -22,7 +22,7 @@ export const LobbyService = (wss: Server) => {
 
 		if (!lobby) return 'NoLobby';
 
-		if (!!lobby.users.find((v) => v == username)) return 'BadUsername';
+		if (!!lobby.users.find((user) => user.name == username)) return 'BadUsername';
 
 		return 'Valid';
 	};
@@ -40,7 +40,7 @@ export const LobbyService = (wss: Server) => {
 
 		lobbies.set(lobbyName, {
 			expires: expires,
-			users: ['testuser'],
+			users: [{ name: 'testuser', socketId: '' }],
 			state: initialState.map((val) => {
 				return { ...val, contributions: [] };
 			})
@@ -50,7 +50,7 @@ export const LobbyService = (wss: Server) => {
 			socket.on('register', (username) => {
 				const existingLobby = lobbies.get(lobbyName);
 				if (existingLobby) {
-					existingLobby.users = [...existingLobby.users, username];
+					existingLobby.users = [...existingLobby.users, { name: username, socketId: socket.id }];
 					lobbies.set(lobbyName, existingLobby);
 				}
 			});
@@ -63,7 +63,11 @@ export const LobbyService = (wss: Server) => {
 			});
 
 			socket.on('disconnect', () => {
-				console.log(`User ${lobbies.get(lobbyName)}`);
+				const lobby = lobbies.get(lobbyName);
+
+				if (!lobby) return console.error(`LOBBY ${lobbyName} NOT FOUND ON DISCONNECT`);
+
+				lobby.users = [...lobby.users.filter((user) => user.socketId != socket.id)];
 			});
 		});
 

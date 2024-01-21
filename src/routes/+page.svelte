@@ -7,10 +7,7 @@
 	import LobbyInput from '$lib/components/lobbyInput.svelte';
 
 	import type { ValidationStatus } from '$lib/types/state';
-
-	import { cn } from '$lib/utils';
-	let className: string | undefined | null = undefined;
-	export { className as class };
+	import { goto } from '$app/navigation';
 
 	let isFetching = false;
 	let error: ValidationStatus;
@@ -23,12 +20,16 @@
 
 		try {
 			const validLobbyRes = await fetch(
-				`http://localhost:2400/valid_join/${lobbyName}/${username}`
+				`http://localhost:2400/validate_join/${lobbyName}/${username}`
 			);
 			const resJSON = await validLobbyRes.json();
 
 			if (!validLobbyRes.ok || !resJSON.valid) error = 'Internal';
 			else error = resJSON.valid;
+
+			if (resJSON.valid == 'Valid') {
+				goto(`lobby/${lobbyName}`);
+			}
 		} catch (e) {
 			error = 'Internal';
 		} finally {
@@ -45,16 +46,14 @@
 
 	<Separator class="my-5"></Separator>
 
-	<div class={cn('flex w-full flex-col items-center justify-center', className)}>
+	<div class="my-2 flex w-full flex-col items-center justify-center">
 		<div class="flex flex-col space-y-2 text-center">
 			<h1 class="text-3xl font-semibold tracking-tight">Join a Lobby</h1>
 			<p class="text-lg text-muted-foreground">Join an existing lobby and get splitting 🪓</p>
 		</div>
 
-		<Separator class="my-2 w-[75%]" />
-
 		<form on:submit={onSubmit} class="w-full">
-			<div class="mt-1 flex flex-col justify-center space-y-2">
+			<div class="mt-1 flex flex-col justify-center">
 				<LobbyInput
 					class="flex w-full flex-col space-y-2"
 					bind:error
@@ -66,8 +65,8 @@
 		</form>
 	</div>
 
-	<div class="my-2 flex-col space-y-2 text-center">
-		<h1 class="text-2xl tracking-tight">Or</h1>
+	<h1 class="mx-auto mb-1 text-2xl tracking-tight">Or</h1>
+	<div class="text-center">
 		<a href="/create">
 			<Button disabled={isFetching} class={buttonClass}>Create Your Own Lobby</Button>
 		</a>
