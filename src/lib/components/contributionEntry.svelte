@@ -5,6 +5,11 @@
 	export let entry: ContributionEntry;
 
 	const entryStyle = 'flex h-9 border-b px-3 py-2 text-xl min-w-fit';
+
+	const Euro = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'EUR'
+	});
 </script>
 
 <div class="my-1 grid grid-cols-1 gap-2">
@@ -17,7 +22,8 @@
 				{entry.quantity}
 			</div>
 			<div class={cn('w-[60%]', entryStyle)}>
-				{entry.price} <span class="pl-1 pt-1 align-sub text-[10px]">/item</span>
+				{Euro.format(parseFloat(entry.price))}
+				<span class="pl-1 pt-1 align-sub text-[10px]">/item</span>
 			</div>
 		</div>
 	</div>

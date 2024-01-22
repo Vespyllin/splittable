@@ -10,6 +10,8 @@
 	import { io } from 'socket.io-client';
 	import { username } from '$lib/stores/username.js';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import Input from '$lib/components/ui/input/input.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
 
 	export let data;
 
@@ -44,20 +46,14 @@
 		]
 	};
 
-	let Euro = new Intl.NumberFormat('en-US', {
+	const Euro = new Intl.NumberFormat('en-US', {
 		style: 'currency',
 		currency: 'EUR'
 	});
 
-	$: state.entries = state.entries.map((v) => {
-		return {
-			...v,
-			price: Euro.format(parseFloat(v.price)),
-			total: Euro.format(parseFloat(v.total))
-		};
-	});
+	let contributionAmount = '';
 
-	const socket = io(`ws://localhost:3000/${data.lobbyID}`);
+	// const socket = io(`ws://localhost:3000/${data.lobbyID}`);
 
 	const setup = async () => {
 		// try {
@@ -106,13 +102,16 @@
 									<Separator class="m-1 mx-auto my-2 w-[75%] bg-primary" />
 								{/if}
 							</Dialog.Trigger>
-							<Dialog.Content class="sm:max-w-[425px]">
-								<Dialog.Header>
-									<Dialog.Title>Edit profile</Dialog.Title>
-									<Dialog.Description>
-										Make changes to your profile here. Click save when you're done.
-									</Dialog.Description>
-								</Dialog.Header>
+							<Dialog.Content class="flex w-[90%] flex-col rounded-md">
+								<h1 class="text-semibold text-2xl">Set your contribution</h1>
+								<ContributionEntry {entry} />
+								<div class="flex items-center gap-2">
+									<div>{Euro.format(parseFloat(entry.price))}</div>
+									<div>1/4</div>
+									<Button>+</Button>
+									<Button>-</Button>
+								</div>
+								<div>save cancel</div>
 							</Dialog.Content>
 						</Dialog.Root>
 					{/each}
