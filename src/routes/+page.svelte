@@ -8,6 +8,7 @@
 
 	import type { ValidationStatus } from '$lib/types/state';
 	import { goto } from '$app/navigation';
+	import { username as usernameStore } from '$lib/stores/username';
 
 	let isFetching = false;
 	let error: ValidationStatus;
@@ -36,6 +37,8 @@
 			isFetching = false;
 		}
 	};
+
+	$: usernameStore.set(username ?? '');
 
 	const buttonClass = 'mx-auto mt-1 h-10 w-[97.5%] text-lg';
 </script>

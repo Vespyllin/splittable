@@ -2,7 +2,7 @@
 	import Input from '$lib/components/ui/input/input.svelte';
 	import type { ValidationStatus } from '$lib/types/state';
 	import { cn } from '$lib/utils';
-	import { getContext, setContext } from 'svelte';
+	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	let className: string | undefined | null = undefined;
@@ -12,8 +12,9 @@
 	export let username: string = '';
 	export let lobbyName: string = '';
 
-	let userDataStore = writable({ username: '', lobbyName: '' });
-	setContext('userData', userDataStore);
+	let usernameStore = writable(username);
+	setContext('username', usernameStore);
+	// .subscribe((a) => {console.log('updated username', a)});
 
 	export let isLoading = false;
 
@@ -28,10 +29,7 @@
 	})();
 
 	$: {
-		$userDataStore = {
-			username,
-			lobbyName
-		};
+		$usernameStore = username;
 	}
 
 	// TODO: make fetch req, expose validationError and set it to a descriptive text to be shown on screen

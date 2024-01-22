@@ -47,12 +47,16 @@ export const LobbyService = (wss: Server) => {
 		});
 
 		wss.of(lobbyName).on('connection', (socket) => {
-			socket.on('register', (username) => {
+			socket.on('register', (username, callback) => {
+				console.log('register', username);
 				const existingLobby = lobbies.get(lobbyName);
 				if (existingLobby) {
 					existingLobby.users = [...existingLobby.users, { name: username, socketId: socket.id }];
 					lobbies.set(lobbyName, existingLobby);
 				}
+
+				callback({ status: 'Success' });
+				return null;
 			});
 
 			socket.on('update', (update) => {
