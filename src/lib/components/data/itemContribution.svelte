@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { ContributionEntry } from '$lib/types/state';
+	import type { ContributionData } from '$lib/types/state';
 	import { cn } from '$lib/utils';
 
-	export let entry: ContributionEntry;
+	export let entry: ContributionData;
 
 	const entryStyle = 'flex h-9 border-b px-3 py-2 text-xl min-w-fit';
 
@@ -40,8 +40,6 @@
 							</span>
 						</p>
 						<div class="w-2"></div>
-						<!-- <span class="w-fit">
-						</span> -->
 					{/each}
 				</div>
 			{/if}

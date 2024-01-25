@@ -3,14 +3,13 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	import { cn } from '$lib/utils';
-	import { Label } from './ui/label';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
 	const currencyRegex = /^[0-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
 
-	export let entryData: {
+	export let item: {
 		name: string;
 		total: string;
 		quantity: string;
@@ -22,9 +21,9 @@
 		price: ''
 	};
 
-	let { name, total, quantity, price } = entryData;
+	let { name, total, quantity, price } = item;
 
-	$: entryData = {
+	$: item = {
 		name,
 		total,
 		quantity,

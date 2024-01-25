@@ -1,13 +1,11 @@
 <script lang="ts">
-	import MinimalHeader from '$lib/components/header.svelte';
-	import Footer from '$lib/components/footer.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
-
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
 
-	import LobbyInput from '$lib/components/lobbyInput.svelte';
-	import ItemEntry from '$lib/components/itemEntry.svelte';
+	import MinimalHeader from '$lib/components/layout/header.svelte';
+	import LobbyInput from '$lib/components/input/lobbyInput.svelte';
+	import ReceiptItemInput from '$lib/components/input/receiptItemInput.svelte';
 
 	import type { ValidationStatus, ReceiptEntry } from '$lib/types/state';
 	import { goto } from '$app/navigation';
@@ -51,7 +49,7 @@
 	let data: ReceiptEntry[] = [];
 </script>
 
-<div class="flex h-full w-full flex-col p-8 pb-2">
+<div class="flex h-full w-full flex-col">
 	<MinimalHeader />
 
 	<Separator class="my-3" />
@@ -92,7 +90,7 @@
 							<Separator class="mx-auto my-2 w-[75%]" />
 						{/if}
 
-						<ItemEntry bind:entryData={term} onSubmit={() => (data = data.toSpliced(idx, 1))} />
+						<ReceiptItemInput bind:item={term} onSubmit={() => (data = data.toSpliced(idx, 1))} />
 					{/each}
 				{/key}
 			</div>
@@ -101,5 +99,4 @@
 	<div class="left-0 mb-2 mt-4 flex h-fit w-full justify-center">
 		<Button class="h-12 w-full text-lg" on:click={onSubmit}>Create Lobby</Button>
 	</div>
-	<Footer />
 </div>

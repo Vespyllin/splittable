@@ -1,4 +1,5 @@
 <script>
+	import Footer from '$lib/components/layout/footer.svelte';
 	import '../app.pcss';
 	import { ModeWatcher } from 'mode-watcher';
 </script>
@@ -11,6 +12,8 @@
 	/>
 </svelte:head>
 
-<main class="h-svh">
+<main class="h-svh overflow-scroll p-8 pb-2">
 	<slot />
+
+	<Footer />
 </main>

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import LoveSpiteHeader from '$lib/components/loveSpiteHeader.svelte';
-	import Footer from '$lib/components/footer.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
-	import LobbyInput from '$lib/components/lobbyInput.svelte';
+	import SplashHeader from '$lib/components/layout/splashHeader.svelte';
+	import Footer from '$lib/components/layout/footer.svelte';
+	import LobbyInput from '$lib/components/input/lobbyInput.svelte';
 
 	import type { ValidationStatus } from '$lib/types/state';
 	import { goto } from '$app/navigation';
@@ -44,8 +44,8 @@
 </script>
 
 <!-- TODO: Make header smaller, increase size of other elements -->
-<div class="flex h-full w-full flex-col p-8 pb-2">
-	<LoveSpiteHeader class="h-[20%] w-full justify-center " />
+<div class="flex h-full w-full flex-col">
+	<SplashHeader class="h-[20%] w-full justify-center" />
 
 	<Separator class="my-5"></Separator>
 
@@ -74,6 +74,4 @@
 			<Button disabled={isFetching} class={buttonClass}>Create Your Own Lobby</Button>
 		</a>
 	</div>
-
-	<Footer class="mt-auto" />
 </div>
