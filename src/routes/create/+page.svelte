@@ -46,7 +46,44 @@
 		}
 	};
 
-	let data: ReceiptEntry[] = [];
+	let data: ReceiptEntry[] = [
+		{
+			name: '',
+			total: '',
+			quantity: '',
+			price: ''
+		},
+		{
+			name: '',
+			total: '',
+			quantity: '',
+			price: ''
+		},
+		{
+			name: '',
+			total: '',
+			quantity: '',
+			price: ''
+		},
+		{
+			name: '',
+			total: '',
+			quantity: '',
+			price: ''
+		},
+		{
+			name: '',
+			total: '',
+			quantity: '',
+			price: ''
+		},
+		{
+			name: '',
+			total: '',
+			quantity: '',
+			price: ''
+		}
+	];
 </script>
 
 <div class="flex h-full w-full flex-col">
@@ -54,14 +91,14 @@
 
 	<Separator class="my-3" />
 
-	<div class={'flex w-full grow flex-col items-center'}>
-		<div class="mb-2 flex flex-col space-y-2 text-center">
+	<div class={'mb-4 flex w-full grow flex-col items-center gap-y-2'}>
+		<div class=" flex flex-col space-y-2 text-center">
 			<h1 class="text-2xl font-semibold tracking-tight">Create a Lobby</h1>
 		</div>
 
 		<LobbyInput class="w-full" bind:error bind:username bind:lobbyName />
 
-		<div class="mb-3 mt-5 flex w-full items-center">
+		<div class="mt-2 flex w-full items-center">
 			<Label class="align-text-bottom text-2xl">Receipt Items</Label>
 			{#key addDisabled}
 				<Button
@@ -77,26 +114,23 @@
 			{/key}
 		</div>
 
-		<div class="w-full grow">
-			<div>
-				{#if data.length == 0}
-					<div class="flex items-center px-16 py-2 text-muted-foreground">
-						<h1 class="text-lg">🤔 You can't split a bill with no items...</h1>
-					</div>
-				{/if}
-				{#key data.length}
-					{#each data as term, idx}
-						{#if idx != 0}
-							<Separator class="mx-auto my-2 w-[75%]" />
-						{/if}
+		<div class="h-full w-full">
+			{#if data.length == 0}
+				<div class="flex items-center px-16 py-2 text-muted-foreground">
+					<h1 class="text-lg">🤔 You can't split a bill with no items...</h1>
+				</div>
+			{/if}
+			{#key data.length}
+				{#each data as term, idx}
+					{#if idx != 0}
+						<Separator class="mx-auto my-2 w-[75%]" />
+					{/if}
 
-						<ReceiptItemInput bind:item={term} onSubmit={() => (data = data.toSpliced(idx, 1))} />
-					{/each}
-				{/key}
-			</div>
+					<ReceiptItemInput bind:item={term} onSubmit={() => (data = data.toSpliced(idx, 1))} />
+				{/each}
+			{/key}
 		</div>
 	</div>
-	<div class="left-0 mb-2 mt-4 flex h-fit w-full justify-center">
-		<Button class="h-12 w-full text-lg" on:click={onSubmit}>Create Lobby</Button>
-	</div>
+	<Button class="bottom-0 mx-auto mb-2 h-12 w-full text-lg" on:click={onSubmit}>Create Lobby</Button
+	>
 </div>

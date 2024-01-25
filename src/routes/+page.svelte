@@ -44,7 +44,7 @@
 </script>
 
 <!-- TODO: Make header smaller, increase size of other elements -->
-<div class="flex h-full w-full flex-col bg-lime-900">
+<div class="flex h-full w-full flex-col">
 	<SplashHeader class="h-[20%] w-full justify-center" />
 
 	<Separator class="my-5"></Separator>
