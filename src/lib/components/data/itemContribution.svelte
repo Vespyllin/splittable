@@ -39,7 +39,6 @@
 								{contributor.contribution}
 							</span>
 						</p>
-						<div class="w-2"></div>
 					{/each}
 				</div>
 			{/if}
