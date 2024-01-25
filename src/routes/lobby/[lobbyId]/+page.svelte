@@ -111,7 +111,7 @@
 				<div class="flew grow flex-col">
 					{#each state.entries as entry, idx}
 						<Dialog.Root>
-							<Dialog.Trigger class=" w-full">
+							<Dialog.Trigger class="w-full">
 								<ContributionEntry {entry} />
 								{#if state.entries.length - 1 != idx}
 									<Separator class="m-1 mx-auto mb-1 mt-4 w-[75%] bg-primary" />
