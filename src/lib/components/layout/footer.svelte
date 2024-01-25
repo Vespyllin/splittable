@@ -5,7 +5,7 @@
 	export { className as class };
 </script>
 
-<div class={cn('inset-x-0 bottom-0 mx-auto h-fit max-w-[95%]', className)}>
+<div class={cn('inset-x-0 mx-auto mt-auto h-fit max-w-[95%]', className)}>
 	<footer class="justify-evenly text-center text-[0.7rem] text-sm text-muted-foreground">
 		Għal Kyle għax kien qed jitnejjikli bid-degree.
 	</footer>

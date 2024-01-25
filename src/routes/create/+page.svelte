@@ -86,7 +86,7 @@
 	];
 </script>
 
-<div class="flex h-full w-full flex-col">
+<div class="flex w-full flex-col">
 	<MinimalHeader />
 
 	<Separator class="my-3" />
