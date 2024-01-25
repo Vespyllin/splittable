@@ -55,7 +55,7 @@
 			<Minus />
 		</Button>
 	</div>
-	<div class="mb-2 mt-auto">
+	<div class="mb-2 mt-2">
 		<!-- TODO: Save or Remove contribution depending on if the user has an entry -->
 		<Button class="h-11 w-full text-xl">Save</Button>
 	</div>
