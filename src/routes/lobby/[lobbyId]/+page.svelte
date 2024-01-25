@@ -12,6 +12,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { Plus, Minus } from 'radix-icons-svelte';
 
 	export let data;
 
@@ -51,7 +52,21 @@
 		currency: 'EUR'
 	});
 
-	let contributionAmount = '';
+	let numerator = 1;
+	let denominator = 1;
+	let contributionFraction = 1;
+
+	$: contributionFraction = numerator / denominator;
+
+	const plusHandler = (max: number) => {
+		if (numerator >= denominator) numerator = Math.min(numerator + 1, max);
+		else denominator = Math.max(denominator - 1, 1);
+	};
+
+	const minusHandler = (max: number) => {
+		if (numerator > denominator) numerator = Math.max(numerator - 1, 1);
+		else denominator = Math.min(denominator + 1, max);
+	};
 
 	// const socket = io(`ws://localhost:3000/${data.lobbyID}`);
 
@@ -92,26 +107,52 @@
 			</div>
 			<div class="mt-4">
 				<h1 class="text-2xl font-semibold">Entries</h1>
-				<!-- TODO: Wrap in dialog for contribution selection and detailed view -->
+
 				<div class="flew grow flex-col">
 					{#each state.entries as entry, idx}
 						<Dialog.Root>
-							<Dialog.Trigger class="w-full">
+							<Dialog.Trigger class=" w-full">
 								<ContributionEntry {entry} />
 								{#if state.entries.length - 1 != idx}
-									<Separator class="m-1 mx-auto my-2 w-[75%] bg-primary" />
+									<Separator class="m-1 mx-auto mb-1 mt-4 w-[75%] bg-primary" />
 								{/if}
 							</Dialog.Trigger>
-							<Dialog.Content class="flex w-[90%] flex-col rounded-md">
-								<h1 class="text-semibold text-2xl">Set your contribution</h1>
+							<Dialog.Content class="flex h-[40%] w-[90%] flex-col rounded-xl px-4">
+								<h1 class="text-semibold mb-4 justify-center text-3xl">
+									Set your <span class="font-semibold text-primary"> Contribution </span>
+								</h1>
 								<ContributionEntry {entry} />
-								<div class="flex items-center gap-2">
-									<div>{Euro.format(parseFloat(entry.price))}</div>
-									<div>1/4</div>
-									<Button>+</Button>
-									<Button>-</Button>
+
+								<div class="mt-4 grid h-12 w-full grid-cols-5 gap-2 p-1 text-2xl leading-[2.4rem]">
+									<div class="p-auto col-span-2 w-full rounded-md border text-center">
+										{Euro.format(parseFloat(entry.price) * contributionFraction)}
+									</div>
+									<div class="col-span-1 rounded-md border text-center">
+										{#if denominator > 1}
+											<sup>{numerator}</sup>/<sub>{denominator}</sub>
+										{:else}
+											{numerator}
+										{/if}
+									</div>
+									<div>
+										<Button
+											class="h-full w-full"
+											on:click={() => plusHandler(parseInt(entry.quantity))}
+										>
+											<Plus />
+										</Button>
+									</div>
+									<Button
+										class="h-full w-full"
+										on:click={() => minusHandler(parseInt(entry.quantity))}
+									>
+										<Minus />
+									</Button>
 								</div>
-								<div>save cancel</div>
+								<div class="mb-2 mt-auto">
+									<!-- TODO: Save or Remove contribution depending on if the user has an entry -->
+									<Button class="h-11 w-full text-xl">Save</Button>
+								</div>
 							</Dialog.Content>
 						</Dialog.Root>
 					{/each}

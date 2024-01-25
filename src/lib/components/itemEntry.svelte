@@ -24,14 +24,12 @@
 
 	let { name, total, quantity, price } = entryData;
 
-	$: {
-		entryData = {
-			name,
-			total,
-			quantity,
-			price
-		};
-	}
+	$: entryData = {
+		name,
+		total,
+		quantity,
+		price
+	};
 
 	export let submitCallback: ((e: any) => void) | ((e: any) => Promise<void>);
 	export { submitCallback as onSubmit };
