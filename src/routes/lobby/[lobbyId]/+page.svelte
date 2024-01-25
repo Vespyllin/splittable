@@ -58,14 +58,14 @@
 
 	$: contributionFraction = numerator / denominator;
 
-	const plusHandler = (max: number) => {
-		if (numerator >= denominator) numerator = Math.min(numerator + 1, max);
+	const plusHandler = () => {
+		if (numerator >= denominator) numerator = numerator + 1;
 		else denominator = Math.max(denominator - 1, 1);
 	};
 
-	const minusHandler = (max: number) => {
+	const minusHandler = () => {
 		if (numerator > denominator) numerator = Math.max(numerator - 1, 1);
-		else denominator = Math.min(denominator + 1, max);
+		else denominator = denominator + 1;
 	};
 
 	// const socket = io(`ws://localhost:3000/${data.lobbyID}`);
@@ -135,17 +135,11 @@
 										{/if}
 									</div>
 									<div>
-										<Button
-											class="h-full w-full"
-											on:click={() => plusHandler(parseInt(entry.quantity))}
-										>
+										<Button class="h-full w-full" on:click={() => plusHandler()}>
 											<Plus />
 										</Button>
 									</div>
-									<Button
-										class="h-full w-full"
-										on:click={() => minusHandler(parseInt(entry.quantity))}
-									>
+									<Button class="h-full w-full" on:click={() => minusHandler()}>
 										<Minus />
 									</Button>
 								</div>
