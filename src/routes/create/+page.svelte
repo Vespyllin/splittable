@@ -86,13 +86,13 @@
 	];
 </script>
 
-<div class="flex w-full flex-col">
+<div class="flex w-full grow flex-col">
 	<MinimalHeader />
 
 	<Separator class="my-3" />
 
-	<div class={'mb-4 flex w-full grow flex-col items-center gap-y-2'}>
-		<div class=" flex flex-col space-y-2 text-center">
+	<div class="mb-4 flex w-full flex-col items-center gap-y-2">
+		<div class="flex flex-col space-y-2 text-center">
 			<h1 class="text-2xl font-semibold tracking-tight">Create a Lobby</h1>
 		</div>
 
@@ -131,6 +131,5 @@
 			{/key}
 		</div>
 	</div>
-	<Button class="bottom-0 mx-auto mb-2 h-12 w-full text-lg" on:click={onSubmit}>Create Lobby</Button
-	>
+	<Button class="mx-auto mb-2 mt-auto h-12 w-full text-lg" on:click={onSubmit}>Create Lobby</Button>
 </div>
