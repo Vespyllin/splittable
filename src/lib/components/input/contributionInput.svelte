@@ -1,8 +1,10 @@
 <script lang="ts">
+	import Button from '$lib/components/ui/button/button.svelte';
+
+	import ItemContribution from '$lib/components/data/itemContribution.svelte';
+
 	import type { ContributionData } from '$lib/types/state';
 	import { Minus, Plus } from 'radix-icons-svelte';
-	import ContributionEntry from './itemContribution.svelte';
-	import Button from './ui/button/button.svelte';
 
 	const plusHandler = () => {
 		if (numerator >= denominator) numerator = numerator + 1;
@@ -27,32 +29,34 @@
 	});
 </script>
 
-<h1 class="text-semibold mb-4 justify-center text-3xl">
-	Set your <span class="font-semibold text-primary"> Contribution </span>
-</h1>
-<ContributionEntry {entry} />
+<div>
+	<h1 class="text-semibold mb-4 justify-center text-3xl">
+		Set your <span class="font-semibold text-primary"> Contribution </span>
+	</h1>
+	<ItemContribution {entry} />
 
-<div class="mt-4 grid h-12 w-full grid-cols-5 gap-2 p-1 text-2xl leading-[2.4rem]">
-	<div class="p-auto col-span-2 w-full rounded-md border text-center">
-		{Euro.format(parseFloat(entry.price) * contributionFraction)}
-	</div>
-	<div class="col-span-1 rounded-md border text-center">
-		{#if denominator > 1}
-			<sup>{numerator}</sup>/<sub>{denominator}</sub>
-		{:else}
-			{numerator}
-		{/if}
-	</div>
-	<div>
-		<Button class="h-full w-full" on:click={() => plusHandler()}>
-			<Plus />
+	<div class="mt-4 grid h-12 w-full grid-cols-5 gap-2 p-1 text-2xl leading-[2.4rem]">
+		<div class="p-auto col-span-2 w-full rounded-md border text-center">
+			{Euro.format(parseFloat(entry.price) * contributionFraction)}
+		</div>
+		<div class="col-span-1 rounded-md border text-center">
+			{#if denominator > 1}
+				<sup>{numerator}</sup>/<sub>{denominator}</sub>
+			{:else}
+				{numerator}
+			{/if}
+		</div>
+		<div>
+			<Button class="h-full w-full" on:click={() => plusHandler()}>
+				<Plus />
+			</Button>
+		</div>
+		<Button class="h-full w-full" on:click={() => minusHandler()}>
+			<Minus />
 		</Button>
 	</div>
-	<Button class="h-full w-full" on:click={() => minusHandler()}>
-		<Minus />
-	</Button>
-</div>
-<div class="mb-2 mt-auto">
-	<!-- TODO: Save or Remove contribution depending on if the user has an entry -->
-	<Button class="h-11 w-full text-xl">Save</Button>
+	<div class="mb-2 mt-auto">
+		<!-- TODO: Save or Remove contribution depending on if the user has an entry -->
+		<Button class="h-11 w-full text-xl">Save</Button>
+	</div>
 </div>

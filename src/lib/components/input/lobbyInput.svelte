@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Input from '$lib/components/ui/input/input.svelte';
+
 	import type { ValidationStatus } from '$lib/types/state';
 	import { cn } from '$lib/utils';
 	import { setContext } from 'svelte';

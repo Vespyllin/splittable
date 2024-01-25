@@ -4,7 +4,6 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	import MinimalHeader from '$lib/components/layout/header.svelte';
-	import Footer from '$lib/components/layout/footer.svelte';
 	import ItemContribution from '$lib/components/data/itemContribution.svelte';
 	import ContributionInput from '$lib/components/input/contributionInput.svelte';
 
