@@ -62,7 +62,7 @@
 	};
 </script>
 
-<div class="flex h-screen w-screen flex-col">
+<div class="flex h-full w-full flex-col">
 	<MinimalHeader img="../bill.png" />
 
 	<Separator class="my-3" />

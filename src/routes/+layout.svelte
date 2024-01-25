@@ -12,8 +12,7 @@
 	/>
 </svelte:head>
 
-<main class="h-svh overflow-scroll p-8 pb-2">
+<main class="relative flex h-svh flex-col overflow-scroll p-8 pb-2">
 	<slot />
-
 	<Footer />
 </main>

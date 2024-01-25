@@ -8,6 +8,6 @@
 </script>
 
 <div class={cn('flex h-[8%] justify-center', className)}>
-	<img src={img} alt="" class="left-0 h-full invert" />
+	<img src={img} alt="" class="left-0 h-16 invert" />
 	<h1 class="my-auto ml-5 text-center text-4xl font-bold text-primary">Splittable</h1>
 </div>

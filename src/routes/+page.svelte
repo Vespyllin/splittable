@@ -44,7 +44,7 @@
 </script>
 
 <!-- TODO: Make header smaller, increase size of other elements -->
-<div class="flex h-full w-full flex-col">
+<div class="flex h-full w-full flex-col bg-lime-900">
 	<SplashHeader class="h-[20%] w-full justify-center" />
 
 	<Separator class="my-5"></Separator>
@@ -55,16 +55,9 @@
 			<p class="text-lg text-muted-foreground">Join an existing lobby and get splitting 🪓</p>
 		</div>
 
-		<form on:submit={onSubmit} class="w-full">
-			<div class="mt-1 flex flex-col justify-center">
-				<LobbyInput
-					class="flex w-full flex-col space-y-2"
-					bind:error
-					bind:username
-					bind:lobbyName
-				/>
-				<Button class={buttonClass} type="submit" disabled={isFetching}>Join Lobby</Button>
-			</div>
+		<form on:submit={onSubmit} class="mt-1 w-full">
+			<LobbyInput class="flex w-full flex-col space-y-2" bind:error bind:username bind:lobbyName />
+			<Button class={buttonClass} type="submit" disabled={isFetching}>Join Lobby</Button>
 		</form>
 	</div>
 
