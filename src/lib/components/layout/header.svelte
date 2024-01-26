@@ -4,7 +4,7 @@
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
-	export let img = './bill.png';
+	let img = '/bill.png';
 </script>
 
 <div class={cn('flex h-[4.5rem] justify-center', className)}>

@@ -58,17 +58,34 @@
 		// 	return false;
 		// }
 
+		// const sleep = async (ms: number) => new Promise((x) => setTimeout(x, ms));
+		// await sleep(10000);
 		return true;
 	};
 </script>
 
 <div class="flex h-full w-full flex-col">
-	<MinimalHeader img="../bill.png" />
+	<MinimalHeader />
 
 	<Separator class="my-3" />
 
 	{#await setup()}
-		<Skeleton class="h-6 w-full" />
+		<div class="mb-4 space-y-1">
+			<Skeleton class="h-8 w-[70%] bg-muted" />
+			<Skeleton class="h-8 w-full " />
+			<Skeleton class="h-8 w-full" />
+		</div>
+		<Skeleton class="mb-2 h-8 w-[35%] bg-muted" />
+		<div class="space-y-3">
+			{#each { length: 3 } as _}
+				<div class="grid grid-cols-3 gap-2">
+					<Skeleton class="col-span-3 h-8" />
+					<Skeleton class="h-8" />
+					<Skeleton class="h-8" />
+					<Skeleton class="h-8" />
+				</div>
+			{/each}
+		</div>
 	{:then haveSocket}
 		{#if haveSocket}
 			<h1 class="text-2xl font-semibold">Lobby members</h1>

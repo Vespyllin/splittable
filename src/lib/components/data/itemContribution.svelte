@@ -13,7 +13,7 @@
 </script>
 
 <div class="my-1 grid grid-cols-1 gap-2">
-	<div class="flex flex-wrap gap-2">
+	<div class="flex flex-wrap gap-1">
 		<div class={cn('grow', entryStyle)}>
 			{entry.name}
 		</div>
@@ -28,20 +28,18 @@
 		</div>
 	</div>
 	<div class="flex w-full border-b px-2 py-1 text-xl">
-		<div class="no-scrollbar justify-even my-auto flex w-full px-1">
-			{#if entry.contributors.length == 0}
-				<p class="text-muted-foreground">no contributors</p>
-			{:else}
-				<div class="flex w-full flex-wrap text-left">
-					{#each entry.contributors as contributor, idx}
-						<p>
-							{contributor.name}:<span class="w-fit text-primary">
-								{contributor.contribution}
-							</span>
-						</p>
-					{/each}
-				</div>
-			{/if}
-		</div>
+		{#if entry.contributors.length == 0}
+			<p class="text-muted-foreground">no contributors</p>
+		{:else}
+			<div class="grid w-full grid-cols-3 gap-x-1">
+				{#each entry.contributors as contributor}
+					<p class="mr-auto">
+						{contributor.name}:<span class="w-fit text-primary">
+							{contributor.contribution}
+						</span>
+					</p>
+				{/each}
+			</div>
+		{/if}
 	</div>
 </div>

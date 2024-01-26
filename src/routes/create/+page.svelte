@@ -46,44 +46,7 @@
 		}
 	};
 
-	let data: ReceiptEntry[] = [
-		{
-			name: '',
-			total: '',
-			quantity: '',
-			price: ''
-		},
-		{
-			name: '',
-			total: '',
-			quantity: '',
-			price: ''
-		},
-		{
-			name: '',
-			total: '',
-			quantity: '',
-			price: ''
-		},
-		{
-			name: '',
-			total: '',
-			quantity: '',
-			price: ''
-		},
-		{
-			name: '',
-			total: '',
-			quantity: '',
-			price: ''
-		},
-		{
-			name: '',
-			total: '',
-			quantity: '',
-			price: ''
-		}
-	];
+	let data: ReceiptEntry[] = [];
 </script>
 
 <div class="flex w-full grow flex-col">
@@ -106,7 +69,7 @@
 					class="ml-auto h-8 w-12"
 					on:click={() => {
 						//!!! DO NOT TOUCH !!!
-						data = [...data.reverse(), { name: ``, total: '', quantity: '', price: '' }].reverse();
+						data = [...data.reverse(), { name: '', total: '', quantity: '', price: '' }].reverse();
 					}}
 				>
 					+
