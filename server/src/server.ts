@@ -1,10 +1,11 @@
-// import { handler } from './build/handler.js';
 import { Server } from 'socket.io';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import { LobbyService } from './LobbyService';
+
+// import { handler } from './build/handler.js';
 // const express = require('express');
 // const cors = require('cors');
-import { LobbyService } from './LobbyService';
 
 const PORT = process.env.PORT ?? 2400;
 
