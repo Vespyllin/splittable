@@ -14,7 +14,7 @@
 
 <div class="my-1 grid grid-cols-1 gap-2">
 	<div class="flex flex-wrap gap-1">
-		<div class={cn('grow', entryStyle)}>
+		<div class={cn('grow font-semibold text-primary', entryStyle)}>
 			{entry.name}
 		</div>
 		<div class="flex min-w-[50%] grow gap-2">
@@ -31,9 +31,9 @@
 		{#if entry.contributors.length == 0}
 			<p class="text-muted-foreground">no contributors</p>
 		{:else}
-			<div class="grid w-full grid-cols-3 gap-x-1">
+			<div class="flex w-full flex-wrap gap-2">
 				{#each entry.contributors as contributor}
-					<p class="mr-auto">
+					<p>
 						{contributor.name}:<span class="w-fit text-primary">
 							{contributor.contribution}
 						</span>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	import MinimalHeader from '$lib/components/layout/header.svelte';
@@ -9,11 +10,9 @@
 
 	import type { Lobby } from '$lib/types/state';
 	import { io } from 'socket.io-client';
-	import { username } from '$lib/stores/username.js';
 
 	export let data;
-
-	data.lobbyID;
+	const { lobbyId, username } = data;
 
 	// TODO: import username store, set self field to that
 	// TODO: set handler for onconnect server emit to update contributor data
@@ -44,19 +43,20 @@
 		]
 	};
 
-	// const socket = io(`ws://localhost:3000/${data.lobbyID}`);
+	const socket = io(`ws://localhost:3000/${lobbyId}`);
 
 	const setup = async () => {
-		// try {
-		// 	await socket.timeout(1000).emitWithAck('register', $username);
-		// 	state.contributors.push($username);
-		// 	socket.on('update', (payload) => {
-		// 		console.log(payload);
-		// 	});
-		// } catch (error) {
-		// 	console.log(`Failed to register ${$username}`);
-		// 	return false;
-		// }
+		try {
+			await socket.timeout(1000).emitWithAck('register', username);
+			state.contributors.push(username);
+			socket.on('update', (payload) => {
+				console.log("RECV on 'UPDATE':", payload);
+			});
+			socket.emit('update', 'penis');
+		} catch (error) {
+			console.log(`Failed to register ${username}`);
+			return false;
+		}
 
 		// const sleep = async (ms: number) => new Promise((x) => setTimeout(x, ms));
 		// await sleep(10000);
@@ -110,8 +110,19 @@
 									<Separator class="m-1 mx-auto mb-1 mt-4 w-[75%] bg-primary" />
 								{/if}
 							</Dialog.Trigger>
-							<Dialog.Content class="flex h-fit min-h-[40%] w-[90%] flex-col rounded-xl px-4">
+							<Dialog.Content class="flex h-fit min-h-fit w-[90%] flex-col rounded-xl px-4">
 								<ContributionInput {entry} />
+								<!-- TODO: Save or Remove contribution depending on if the user has an entry -->
+								<Dialog.Close class="mb-2 mt-2">
+									{#if entry.contributors.findIndex((x) => x.name == username) == -1}
+										<Button class="h-11 w-full text-xl">Save</Button>
+									{:else}
+										<div class="flex gap-2">
+											<Button class="h-11 w-1/2 text-xl">Save</Button>
+											<Button class="h-11 w-1/2 text-xl">Delete</Button>
+										</div>
+									{/if}
+								</Dialog.Close>
 							</Dialog.Content>
 						</Dialog.Root>
 					{/each}

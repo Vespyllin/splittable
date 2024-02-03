@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>BillSplitter.Svelte</title>
+	<title>Splittable</title>
 	<meta
 		name="viewport"
 		content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"

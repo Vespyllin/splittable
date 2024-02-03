@@ -2,19 +2,21 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
-
 	import MinimalHeader from '$lib/components/layout/header.svelte';
 	import LobbyInput from '$lib/components/input/lobbyInput.svelte';
 	import ReceiptItemInput from '$lib/components/input/receiptItemInput.svelte';
 
-	import type { ValidationStatus, ReceiptEntry } from '$lib/types/state';
 	import { goto } from '$app/navigation';
+
+	import type { ValidationStatus, ReceiptEntry } from '$lib/types/state';
+	import { Plus } from 'radix-icons-svelte';
 
 	let error: ValidationStatus;
 
 	let username: string | undefined = undefined;
 	let lobbyName: string | undefined = undefined;
 
+	let data: ReceiptEntry[] = [];
 	let addDisabled = false;
 	$: {
 		if (data.length != 0) {
@@ -42,11 +44,9 @@
 			const createJson = await createRes.json();
 			console.log(createJson);
 
-			if (!!createJson.created) goto(`/lobby/${lobbyName}`);
+			if (!!createJson.created) goto(`/lobby/?id=${lobbyName}&username=${username}`);
 		}
 	};
-
-	let data: ReceiptEntry[] = [];
 </script>
 
 <div class="flex w-full grow flex-col">
@@ -72,7 +72,7 @@
 						data = [...data.reverse(), { name: '', total: '', quantity: '', price: '' }].reverse();
 					}}
 				>
-					+
+					<Plus />
 				</Button>
 			{/key}
 		</div>
