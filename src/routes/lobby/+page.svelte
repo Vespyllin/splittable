@@ -1,22 +1,17 @@
 <script lang="ts">
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
 
 	import MinimalHeader from '$lib/components/layout/header.svelte';
-	import ItemContribution from '$lib/components/data/itemContribution.svelte';
-	import ContributionInput from '$lib/components/input/contributionInput.svelte';
+	import ContributionDialog from '$lib/components/contributions/contributionDialog.svelte';
 
 	import type { Lobby } from '$lib/types/state';
+	import type { UpdatePayload } from '$lib/types/server';
 	import { io } from 'socket.io-client';
 
 	export let data;
 	const { lobbyId, username } = data;
 
-	// TODO: import username store, set self field to that
-	// TODO: set handler for onconnect server emit to update contributor data
-	// 		 and handler for onstateupdate server emit to update state data
 	let state: Lobby = {
 		// contributors: [],
 		// entries: []
@@ -27,18 +22,25 @@
 				total: '150',
 				quantity: '3',
 				price: '50',
-				contributors: [
-					{ name: 'Paul', contribution: 1 },
-					{ name: 'Mattea', contribution: 1 },
-					{ name: 'Sam', contribution: 1 }
+				contributions: [
+					{ name: 'Paul', amount: 1 },
+					{ name: 'Mattea', amount: 1 },
+					{ name: 'Sam', amount: 1 }
 				]
+			},
+			{
+				name: 'Coca Cola',
+				total: '4.50',
+				quantity: '3',
+				price: '1.50',
+				contributions: [{ name: 'person', amount: 2 }]
 			},
 			{
 				name: 'Chocolate Fondant',
 				total: '30.99',
 				quantity: '2',
 				price: '15.49',
-				contributors: []
+				contributions: []
 			}
 		]
 	};
@@ -47,19 +49,38 @@
 
 	const setup = async () => {
 		try {
-			await socket.timeout(1000).emitWithAck('register', username);
-			state.contributors.push(username);
-			socket.on('update', (payload) => {
+			const registerRes = await socket.timeout(1000).emitWithAck('register', username);
+			console.log('registerRes', registerRes);
+
+			socket.on('update', (payload: UpdatePayload) => {
 				console.log("RECV on 'UPDATE':", payload);
+
+				const entryIdx = state.entries.findIndex((x) => {
+					return x.name == payload.itemName;
+				});
+
+				if (entryIdx === -1) return console.log(`Could not find ${payload.itemName} in state.`);
+
+				const contributionIdx = state.entries[entryIdx].contributions.findIndex(
+					(x) => x.name == payload.username
+				);
+
+				if (contributionIdx !== -1) {
+					state.entries[entryIdx].contributions[contributionIdx].amount = payload.contribution;
+				} else {
+					state.entries[entryIdx].contributions.push({
+						name: payload.username,
+						amount: payload.contribution
+					});
+				}
+				state = { ...state };
 			});
-			socket.emit('update', 'penis');
+			// socket.disconnect();
 		} catch (error) {
 			console.log(`Failed to register ${username}`);
 			return false;
 		}
 
-		// const sleep = async (ms: number) => new Promise((x) => setTimeout(x, ms));
-		// await sleep(10000);
 		return true;
 	};
 </script>
@@ -92,9 +113,11 @@
 			<div class="my-2 flex w-full flex-wrap">
 				{#each state.contributors as contributor, idx}
 					<p class="mx-1 text-xl text-primary">
-						{contributor}{#if idx != state.contributors.length - 1}<span class="text-foreground"
-								>,</span
-							>{/if}
+						{#if idx != state.contributors.length - 1}
+							{contributor}<span class="text-foreground">,</span>
+						{:else}
+							{contributor}
+						{/if}
 					</p>
 				{/each}
 			</div>
@@ -102,30 +125,26 @@
 				<h1 class="text-2xl font-semibold">Entries</h1>
 
 				<div class="flew grow flex-col">
+					<!-- {#key } -->
 					{#each state.entries as entry, idx}
-						<Dialog.Root>
-							<Dialog.Trigger class="w-full">
-								<ItemContribution {entry} />
-								{#if state.entries.length - 1 != idx}
-									<Separator class="m-1 mx-auto mb-1 mt-4 w-[75%] bg-primary" />
-								{/if}
-							</Dialog.Trigger>
-							<Dialog.Content class="flex h-fit min-h-fit w-[90%] flex-col rounded-xl px-4">
-								<ContributionInput {entry} />
-								<!-- TODO: Save or Remove contribution depending on if the user has an entry -->
-								<Dialog.Close class="mb-2 mt-2">
-									{#if entry.contributors.findIndex((x) => x.name == username) == -1}
-										<Button class="h-11 w-full text-xl">Save</Button>
-									{:else}
-										<div class="flex gap-2">
-											<Button class="h-11 w-1/2 text-xl">Save</Button>
-											<Button class="h-11 w-1/2 text-xl">Delete</Button>
-										</div>
-									{/if}
-								</Dialog.Close>
-							</Dialog.Content>
-						</Dialog.Root>
+						<ContributionDialog
+							{entry}
+							defaultValue={entry.contributions.find((x) => x.name == username)?.amount}
+							sendUpdate={(v) => {
+								const x = {
+									username: username,
+									itemName: entry.name,
+									contribution: v
+								};
+								console.log('emitting', x);
+								socket.emit('update', x);
+							}}
+						/>
+						{#if state.entries.length - 1 != idx}
+							<Separator class="m-1 mx-auto mb-1 mt-4 w-[75%] bg-primary" />
+						{/if}
 					{/each}
+					<!-- {/key} -->
 				</div>
 			</div>
 		{:else}

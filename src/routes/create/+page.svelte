@@ -3,8 +3,8 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import MinimalHeader from '$lib/components/layout/header.svelte';
-	import LobbyInput from '$lib/components/input/lobbyInput.svelte';
-	import ReceiptItemInput from '$lib/components/input/receiptItemInput.svelte';
+	import LobbyInput from '$lib/components/lobby/lobbyInput.svelte';
+	import ReceiptItemInput from '$lib/components/lobby/receiptItemInput.svelte';
 
 	import { goto } from '$app/navigation';
 

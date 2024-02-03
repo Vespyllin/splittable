@@ -2,7 +2,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import SplashHeader from '$lib/components/layout/splashHeader.svelte';
-	import LobbyInput from '$lib/components/input/lobbyInput.svelte';
+	import LobbyInput from '$lib/components/lobby/lobbyInput.svelte';
 
 	import type { ValidationStatus } from '$lib/types/state';
 	import { goto } from '$app/navigation';

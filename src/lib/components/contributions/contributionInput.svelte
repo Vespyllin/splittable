@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 
-	import ItemContribution from '$lib/components/data/itemContribution.svelte';
+	import ItemContribution from '$lib/components/contributions/itemContribution.svelte';
 
 	import type { ContributionData } from '$lib/types/state';
 	import { Minus, Plus } from 'radix-icons-svelte';
@@ -18,10 +18,14 @@
 
 	let numerator = 1;
 	let denominator = 1;
-	let contributionFraction = 1;
 
-	$: contributionFraction = numerator / denominator;
 	export let entry: ContributionData;
+	export let contributionAmount: number = 1;
+
+	if (contributionAmount >= 1) numerator = contributionAmount;
+	else denominator = 1 / contributionAmount;
+
+	$: contributionAmount = numerator / denominator;
 
 	const Euro = new Intl.NumberFormat('en-US', {
 		style: 'currency',
@@ -37,7 +41,7 @@
 
 	<div class="mt-4 grid h-12 w-full grid-cols-5 gap-2 p-1 text-2xl leading-[2.4rem]">
 		<div class="p-auto col-span-2 w-full rounded-md border text-center">
-			{Euro.format(parseFloat(entry.price) * contributionFraction)}
+			{Euro.format(parseFloat(entry.price) * (contributionAmount ?? 1))}
 		</div>
 		<div class="col-span-1 rounded-md border text-center">
 			{#if denominator > 1}
