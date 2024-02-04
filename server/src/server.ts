@@ -38,7 +38,26 @@ const main = () => {
 		res.json({ created: lobbyRes }).status(200);
 	});
 
-	lobbyService.createLobby('abc', []);
+	lobbyService.createLobby('abc', [
+		{
+			name: 'Steak',
+			total: '150',
+			quantity: '3',
+			price: '50'
+		},
+		{
+			name: 'Coca Cola',
+			total: '4.50',
+			quantity: '3',
+			price: '1.50'
+		},
+		{
+			name: 'Chocolate Fondant',
+			total: '30.99',
+			quantity: '2',
+			price: '15.49'
+		}
+	]);
 
 	// app.use(handler);
 	app.listen(PORT, () => {

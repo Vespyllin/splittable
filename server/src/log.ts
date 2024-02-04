@@ -1,7 +1,8 @@
 type LogData =
-	| { eventType: 'REQ' | 'RES'; event: string; user?: string; payload?: string; info?: string }
-	| { eventType: 'CREATE' | 'DELETE'; lobbyId: string; reason?: string }
-	| { eventType: 'CONN' | 'DISC'; lobbyId: string; user?: string; reason?: string };
+	| { eventType: 'REQ' | 'RES'; event: string; user?: string; payload?: any; info?: string }
+	| { eventType: 'CONN' | 'DISC'; lobbyId: string; user?: string; info?: string }
+	| { eventType: 'CREATE' | 'DELETE'; lobbyId: string; info?: string }
+	| { eventType: 'ERR'; info?: string };
 
 const log = (params: LogData) => {
 	const { eventType = 'REQ', event, lobbyId } = params as any;
@@ -30,6 +31,7 @@ const log = (params: LogData) => {
 		message += `${eventType} lobby "${lobbyId}"`;
 	else if (eventType == 'CONN' || eventType == 'DISC')
 		message += `${eventType} on lobby "${lobbyId}"`;
+	else message += `${eventType}`;
 
 	message += paramString;
 

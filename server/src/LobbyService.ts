@@ -5,14 +5,14 @@ type Validation = 'NoLobby' | 'BadUsername' | 'Valid';
 
 type ReceiptEntry = { name: string; total: string; quantity: string; price: string };
 
-type EntryContribution = ReceiptEntry & {
-	contributions: { contributorId: string; contribution: number }[];
+type ContributionData = ReceiptEntry & {
+	contributions: { name: string; amount: number }[];
 };
 
 type lobbyState = {
 	expires: number; // Timeout Unix timestamp
 	users: { name: string; socketId: string }[];
-	state: EntryContribution[];
+	entries: ContributionData[];
 };
 
 export const LobbyService = (wss: Server) => {
@@ -23,7 +23,7 @@ export const LobbyService = (wss: Server) => {
 	// 	for (const [lobbyId, state] of lobbyStates.entries()) {
 	// 		if (state.expires < now) {
 	// 			lobbyStates.delete(lobbyId);
-	// 			log({ eventType: 'DELETE', lobbyId, reason: `Timed out ${now - state.expires}ms ago.` });
+	// 			log({ eventType: 'DELETE', lobbyId, info: `Timed out ${now - state.expires}ms ago.` });
 	// 		}
 	// 	}
 	// }, 120000);
@@ -36,6 +36,8 @@ export const LobbyService = (wss: Server) => {
 
 		return 'Valid';
 	};
+
+	const updateState = (lobbyId: string) => {};
 
 	const createLobby = (
 		lobbyId: string,
@@ -51,7 +53,7 @@ export const LobbyService = (wss: Server) => {
 		lobbyStates.set(lobbyId, {
 			expires: expires,
 			users: [{ name: 'testuser', socketId: '' }],
-			state: initialState.map((val) => {
+			entries: initialState.map((val) => {
 				return { ...val, contributions: [] };
 			})
 		});
@@ -60,12 +62,9 @@ export const LobbyService = (wss: Server) => {
 			log({ eventType: 'CONN', lobbyId: lobbyId });
 
 			socket.on('register', (username, callback) => {
-				// TODO: Validation on username
-				console.log('register');
-				const lobby = lobbyStates.get(lobbyId)!;
-				if (!lobby) {
-					return console.log('COULD NOT FIND LOBBY', lobbyId);
-				}
+				const lobby = lobbyStates.get(lobbyId);
+				if (!lobby)
+					return log({ eventType: 'ERR', info: `Could not find lobby ${lobbyId} on "register"` });
 
 				if (lobby.users.findIndex((x) => x.name == username && x.socketId != socket.id) !== -1) {
 					log({
@@ -76,21 +75,31 @@ export const LobbyService = (wss: Server) => {
 					});
 
 					return callback({ status: 'Failure' });
-				} else {
-					log({
-						eventType: 'REQ',
-						event: 'register',
-						payload: username
-					});
-
-					lobby.users = [...lobby.users, { name: username, socketId: socket.id }];
-					lobbyStates.set(lobbyId, lobby);
-
-					return callback({ status: 'Success' });
 				}
+
+				log({
+					eventType: 'REQ',
+					event: 'register',
+					payload: username
+				});
+
+				lobby.users = [...lobby.users, { name: username, socketId: socket.id }];
+				lobbyStates.set(lobbyId, lobby);
+
+				log({
+					eventType: 'RES',
+					event: 'register',
+					payload: lobby.entries
+				});
+
+				return callback({
+					status: 'Success',
+					contributors: lobby.users.map((x) => x.name),
+					entries: lobby.entries
+				});
 			});
 
-			socket.on('update', (payload) => {
+			socket.on('update', (payload: { username: string; amount: number; itemName: string }) => {
 				const lobby = lobbyStates.get(lobbyId)!;
 				const sender = lobby?.users.find((x) => x.socketId == socket.id);
 
@@ -104,14 +113,40 @@ export const LobbyService = (wss: Server) => {
 					return socket.emit('bad req');
 				}
 
-				// TODO: update validation
-
 				log({
 					eventType: 'REQ',
 					event: 'update',
 					payload: payload,
 					user: sender.name
 				});
+
+				const { itemName, username, amount } = payload;
+
+				// TODO: validation
+				// TODO: Update server state for future register requests
+				const entryIdx = lobby.entries.findIndex((x) => {
+					return x.name == payload.itemName;
+				});
+
+				if (entryIdx === -1) return console.log(`Could not find ${itemName} in state.`);
+
+				const contributionIdx = lobby.entries[entryIdx].contributions.findIndex(
+					(x) => x.name == username
+				);
+
+				if (contributionIdx !== -1) {
+					console.log('contribution found for user');
+					lobby.entries[entryIdx].contributions[contributionIdx].amount = amount;
+				} else {
+					console.log('contribution not found for user');
+					lobby.entries[entryIdx].contributions.push({
+						name: username,
+						amount: amount ?? 1234
+					});
+				}
+
+				console.log(lobby);
+
 				wss.of(lobbyId).sockets.forEach((clientSocket) => {
 					const target = lobby?.users.find((x) => x.socketId == clientSocket.id);
 
@@ -136,7 +171,7 @@ export const LobbyService = (wss: Server) => {
 					eventType: 'DISC',
 					lobbyId: lobbyId,
 					user: lobby.users.find((user) => user.socketId == socket.id)?.name,
-					reason: 'Disconnected Socket' + socket.id + 'User Socket' + JSON.stringify(lobby.users)
+					info: 'Disconnected Socket' + socket.id + 'User Socket' + JSON.stringify(lobby.users)
 				});
 
 				lobby.users = [...lobby.users.filter((user) => user.socketId != socket.id)];

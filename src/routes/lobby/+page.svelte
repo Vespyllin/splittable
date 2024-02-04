@@ -13,36 +13,8 @@
 	const { lobbyId, username } = data;
 
 	let state: Lobby = {
-		// contributors: [],
-		// entries: []
-		contributors: ['Paul', 'Kyle', 'Mattea', 'Sam', 'Milena', 'Carla'],
-		entries: [
-			{
-				name: 'Steak',
-				total: '150',
-				quantity: '3',
-				price: '50',
-				contributions: [
-					{ name: 'Paul', amount: 1 },
-					{ name: 'Mattea', amount: 1 },
-					{ name: 'Sam', amount: 1 }
-				]
-			},
-			{
-				name: 'Coca Cola',
-				total: '4.50',
-				quantity: '3',
-				price: '1.50',
-				contributions: [{ name: 'person', amount: 2 }]
-			},
-			{
-				name: 'Chocolate Fondant',
-				total: '30.99',
-				quantity: '2',
-				price: '15.49',
-				contributions: []
-			}
-		]
+		contributors: [],
+		entries: []
 	};
 
 	const socket = io(`ws://localhost:3000/${lobbyId}`);
@@ -51,6 +23,8 @@
 		try {
 			const registerRes = await socket.timeout(1000).emitWithAck('register', username);
 			console.log('registerRes', registerRes);
+			state.contributors = registerRes.contributors;
+			state.entries = registerRes.entries;
 
 			socket.on('update', (payload: UpdatePayload) => {
 				console.log("RECV on 'UPDATE':", payload);
@@ -66,11 +40,11 @@
 				);
 
 				if (contributionIdx !== -1) {
-					state.entries[entryIdx].contributions[contributionIdx].amount = payload.contribution;
+					state.entries[entryIdx].contributions[contributionIdx].amount = payload.amount;
 				} else {
 					state.entries[entryIdx].contributions.push({
 						name: payload.username,
-						amount: payload.contribution
+						amount: payload.amount
 					});
 				}
 				state = { ...state };
@@ -134,7 +108,7 @@
 								const x = {
 									username: username,
 									itemName: entry.name,
-									contribution: v
+									amount: v
 								};
 								console.log('emitting', x);
 								socket.emit('update', x);
