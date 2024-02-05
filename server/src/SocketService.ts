@@ -2,10 +2,6 @@ import { Server } from 'socket.io';
 import { Lobby } from './Lobby';
 import log from './log';
 
-// const getRegisteredSockets = () =>
-// 	[...wss.of(namespace).sockets]
-// 		.filter((socket) => !!lobby.getUserBySocket(socket[1].id))
-// 		.map((x) => x[1]);
 export default (wss: Server, namespace: string, lobby: Lobby, ttl: number = 60 * 1000 * 10) => {
 	wss.of(namespace).timeout(ttl).disconnectSockets(true);
 

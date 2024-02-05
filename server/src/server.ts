@@ -20,12 +20,7 @@ const main = () => {
 	app.get('/validate_join/:lobbyName/:username', async (req, res: Response) => {
 		const { lobbyName, username } = req.params;
 
-		return res
-			.json({
-				valid: 'Valid'
-				// lobbyService.validateJoin(lobbyName, username)
-			})
-			.status(200);
+		return res.json({ valid: 'Valid' }).status(200);
 	});
 
 	app.post('/create_lobby', (req, res) => {
@@ -39,31 +34,6 @@ const main = () => {
 
 		res.json({ created: true }).status(200);
 	});
-
-	initSocket(
-		wss,
-		'testlobby',
-		new Lobby([
-			{
-				name: 'Steak',
-				total: '150',
-				quantity: '3',
-				price: '50'
-			},
-			{
-				name: 'Coca Cola',
-				total: '4.50',
-				quantity: '4',
-				price: '1.50'
-			},
-			{
-				name: 'Chocolate Fondant',
-				total: '30.99',
-				quantity: '2',
-				price: '15.49'
-			}
-		])
-	);
 
 	// app.use(handler);
 	app.listen(PORT, () => {
