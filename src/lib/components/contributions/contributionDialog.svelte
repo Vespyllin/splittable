@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { ContributionData } from '$lib/types/state';
-	import ItemContribution from '../contributions/itemContribution.svelte';
+	import type { ContributionData, EntryData } from '$lib/types/state';
+	import ItemContribution from './Entry.svelte';
 	import Button from '../ui/button/button.svelte';
 	import * as Dialog from '../ui/dialog';
 	import ContributionInput from './contributionInput.svelte';
 
-	export let entry: ContributionData;
+	export let entry: EntryData;
 	export let sendUpdate: (v: number) => void;
 	export let defaultValue: number | undefined;
 

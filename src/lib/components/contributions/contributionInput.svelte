@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 
-	import ItemContribution from '$lib/components/contributions/itemContribution.svelte';
+	import ItemContribution from '$lib/components/contributions/Entry.svelte';
 
-	import type { ContributionData } from '$lib/types/state';
+	import type { ContributionData, EntryData } from '$lib/types/state';
 	import { Minus, Plus } from 'radix-icons-svelte';
 
 	const plusHandler = () => {
@@ -19,7 +19,7 @@
 	let numerator = 1;
 	let denominator = 1;
 
-	export let entry: ContributionData;
+	export let entry: EntryData;
 	export let contributionAmount: number = 1;
 
 	if (contributionAmount >= 1) numerator = contributionAmount;
@@ -41,7 +41,7 @@
 
 	<div class="mt-4 grid h-12 w-full grid-cols-5 gap-2 p-1 text-2xl leading-[2.4rem]">
 		<div class="p-auto col-span-2 w-full rounded-md border text-center">
-			{Euro.format(parseFloat(entry.price) * (contributionAmount ?? 1))}
+			{Euro.format(parseFloat(entry.item.price) * (contributionAmount ?? 1))}
 		</div>
 		<div class="col-span-1 rounded-md border text-center">
 			{#if denominator > 1}

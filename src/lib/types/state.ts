@@ -1,13 +1,16 @@
 export type ValidationStatus = 'NoLobby' | 'BadUsername' | 'Valid' | 'Internal';
 
-export type ReceiptEntry = { name: string; total: string; quantity: string; price: string };
+export type ItemData = { name: string; total: string; quantity: string; price: string };
 
-export type ContributionData = ReceiptEntry & {
-	contributions: { name: string; amount: number }[];
+export type ContributionData = { username: string; amount: number };
+
+export type EntryData = {
+	item: ItemData;
+	contributions: ContributionData[];
 };
 
 export type Lobby = {
 	contributors: string[];
 
-	entries: ContributionData[];
+	entries: EntryData[];
 };

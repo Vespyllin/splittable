@@ -4,11 +4,11 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import MinimalHeader from '$lib/components/layout/header.svelte';
 	import LobbyInput from '$lib/components/lobby/lobbyInput.svelte';
-	import ReceiptItemInput from '$lib/components/lobby/receiptItemInput.svelte';
+	import ReceiptItemInput from '$lib/components/lobby/itemInput.svelte';
 
 	import { goto } from '$app/navigation';
 
-	import type { ValidationStatus, ReceiptEntry } from '$lib/types/state';
+	import type { ValidationStatus, ItemData } from '$lib/types/state';
 	import { Plus } from 'radix-icons-svelte';
 
 	let error: ValidationStatus;
@@ -16,7 +16,7 @@
 	let username: string | undefined = undefined;
 	let lobbyName: string | undefined = undefined;
 
-	let data: ReceiptEntry[] = [];
+	let data: ItemData[] = [];
 	let addDisabled = false;
 	$: {
 		if (data.length != 0) {

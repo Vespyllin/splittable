@@ -1,20 +1,24 @@
-type LogData =
-	| { eventType: 'REQ' | 'RES'; event: string; user?: string; payload?: any; info?: string }
-	| { eventType: 'CONN' | 'DISC'; lobbyId: string; user?: string; info?: string }
-	| { eventType: 'CREATE' | 'DELETE'; lobbyId: string; info?: string }
-	| { eventType: 'ERR'; info?: string };
+type LogData = {
+	eventType: 'RECV' | 'SEND' | 'ERR';
+	namespace: string;
+	event: string;
+	payload?: any;
+	user?: string;
+	info?: string;
+};
 
 const log = (params: LogData) => {
-	const { eventType = 'REQ', event, lobbyId } = params as any;
+	const { eventType, event, namespace } = params;
 
 	const paramString =
 		Object.entries(params).length == 0
 			? ''
 			: ':' +
-				Object.entries(params).reduce((acc, [key, value]) => {
-					if (key == 'eventType' || key == 'event' || key == 'lobbyId') return acc;
+				Object.entries(params).reduce((acc: string, [key, value]) => {
+					if (key == 'eventType' || key == 'event' || key == 'namespace') return acc;
 
-					acc += `\n\t\t${key} = ${JSON.stringify(value)}`;
+					const formattedValue = typeof value == 'object' ? JSON.stringify(value, null, 2) : value;
+					acc += `\n${key} = ${formattedValue}`;
 					return acc;
 				}, '');
 
@@ -26,11 +30,8 @@ const log = (params: LogData) => {
 
 	let message = `${timestamp} - `;
 
-	if (eventType == 'REQ' || eventType == 'RES') message += `${eventType} on "${event}"`;
-	else if (eventType == 'CREATE' || eventType == 'DELETE')
-		message += `${eventType} lobby "${lobbyId}"`;
-	else if (eventType == 'CONN' || eventType == 'DISC')
-		message += `${eventType} on lobby "${lobbyId}"`;
+	if (eventType == 'RECV') message += `${eventType} on "${event}" on /${namespace}`;
+	else if (eventType == 'SEND') message += `${eventType} from "${event}" on /${namespace}`;
 	else message += `${eventType}`;
 
 	message += paramString;
