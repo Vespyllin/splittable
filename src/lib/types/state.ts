@@ -1,4 +1,4 @@
-export type ValidationStatus = 'NoLobby' | 'BadUsername' | 'Valid' | 'Internal';
+export type ValidationCode = 'Lobby' | 'Username' | 'Valid' | 'Internal';
 
 export type ItemData = { name: string; total: string; quantity: string; price: string };
 

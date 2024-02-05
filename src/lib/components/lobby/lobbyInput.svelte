@@ -1,13 +1,13 @@
 <script lang="ts">
 	import Input from '$lib/components/ui/input/input.svelte';
 
-	import type { ValidationStatus } from '$lib/types/state';
+	import type { ValidationCode } from '$lib/types/state';
 	import { cn } from '$lib/utils';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
-	export let error: ValidationStatus;
+	export let error: ValidationCode;
 	export let username: string = '';
 	export let lobbyName: string = '';
 
@@ -22,7 +22,7 @@
 		autocapitalize="none"
 		autocorrect="off"
 		disabled={isLoading}
-		class={cn('h-auto text-lg', error === 'BadUsername' ? 'border-red-600' : '')}
+		class={cn('h-auto text-lg', error === 'Username' && 'border-red-600')}
 		bind:value={username}
 	/>
 	<Input
@@ -32,7 +32,7 @@
 		autocapitalize="none"
 		autocorrect="off"
 		disabled={isLoading}
-		class={cn('h-auto text-lg', error === 'NoLobby' ? 'border-red-600' : '')}
+		class={cn('h-auto text-lg', error === 'Lobby' && 'border-red-600')}
 		bind:value={lobbyName}
 	/>
 </div>

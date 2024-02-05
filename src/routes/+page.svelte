@@ -4,45 +4,41 @@
 	import SplashHeader from '$lib/components/layout/splashHeader.svelte';
 	import LobbyInput from '$lib/components/lobby/lobbyInput.svelte';
 
-	import type { ValidationStatus } from '$lib/types/state';
+	import type { ValidationCode } from '$lib/types/state';
 	import { goto } from '$app/navigation';
+	import { cn } from '$lib/utils';
 
 	let isFetching = false;
-	let error: ValidationStatus;
 
 	let username: string | undefined = undefined;
 	let lobbyName: string | undefined = undefined;
 
-	let errorMessage = '';
-	$: errorMessage = (() => {
-		if (!error || error === 'Valid') return '';
+	let error: { code: ValidationCode; message?: string } = { code: 'Valid' };
 
-		if (error === 'NoLobby') return 'Could not find specified lobby.';
-		else if (error === 'BadUsername') return `Username not available in lobby.`;
-
-		return 'Server is not responding. Please try again later.';
-	})();
-
-	const onSubmit = async (event: any) => {
+	const onSubmit = async () => {
 		isFetching = true;
 
-		try {
-			const validLobbyRes = await fetch(
-				`http://localhost:2400/validate_join/${lobbyName}/${username}`
-			);
-			const resJSON = await validLobbyRes.json();
+		const validLobbyRes = await fetch(`http://localhost:2400/validate/${lobbyName}/${username}`);
+		const resJSON = await validLobbyRes.json();
 
-			if (!validLobbyRes.ok || !resJSON.valid) error = 'Internal';
-			else error = resJSON.valid;
+		if (resJSON.ok && resJSON.sucess) return goto(`lobby/?id=${lobbyName}&username=${username}`);
 
-			if (resJSON.valid == 'Valid') {
-				goto(`lobby/?id=${lobbyName}&username=${username}`);
-			}
-		} catch (e) {
-			error = 'Internal';
-		} finally {
-			isFetching = false;
+		const reason: string = resJSON?.reason.toLowerCase();
+
+		if (!reason) {
+			error = { code: 'Internal', message: 'Internal server error. Please try again later.' };
+		} else if (reason == 'bad request') {
+			error = { code: 'Valid', message: '' };
+		} else if (reason.includes('username')) {
+			error = {
+				code: 'Username',
+				message: `Username "${username}" is not available in lobby ${lobbyName}.`
+			};
+		} else if (reason.includes('lobby')) {
+			error = { code: 'Lobby', message: `Could not find lobby "${lobbyName}".` };
 		}
+
+		isFetching = false;
 	};
 </script>
 
@@ -57,13 +53,20 @@
 			<p class="text-lg text-muted-foreground">Join an existing lobby and get splitting 🪓</p>
 		</div>
 
-		<form on:submit={onSubmit} class="mt-1 w-full space-y-1">
-			<LobbyInput class="flex w-full flex-col space-y-2" bind:error bind:username bind:lobbyName />
-			<p class="text-sm text-red-600">{`${errorMessage}`}</p>
-			<Button class="mx-auto  h-10 w-[97.5%] text-lg" type="submit" disabled={isFetching}
-				>Join Lobby</Button
-			>
-		</form>
+		<div class="mt-1 flex w-full flex-col space-y-2">
+			<LobbyInput
+				class="flex w-full flex-col space-y-2"
+				bind:error={error.code}
+				bind:username
+				bind:lobbyName
+			/>
+			<p class={cn('text-center text-sm text-red-600', !error.message && 'hidden')}>
+				{error.message}
+			</p>
+			<Button class="mx-auto  h-10 w-[97.5%] text-lg" on:click={onSubmit} disabled={isFetching}>
+				Join Lobby
+			</Button>
+		</div>
 	</div>
 
 	<h1 class="mx-auto mb-1 text-2xl tracking-tight">Or</h1>

@@ -8,44 +8,68 @@
 
 	import { goto } from '$app/navigation';
 
-	import type { ValidationStatus, ItemData } from '$lib/types/state';
+	import type { ValidationCode, ItemData } from '$lib/types/state';
 	import { Plus } from 'radix-icons-svelte';
+	import { cn } from '$lib/utils';
 
-	let error: ValidationStatus;
+	let error: { code: ValidationCode; message?: string } = { code: 'Valid' };
 
 	let username: string | undefined = undefined;
 	let lobbyName: string | undefined = undefined;
 
 	let data: ItemData[] = [];
 	let addDisabled = false;
+	let isFetching = false;
+
 	$: {
 		if (data.length != 0) {
 			const { name, total, quantity, price } = data[0];
-			if (!name || !total || !quantity || !price) addDisabled = true;
-			else addDisabled = false;
+			addDisabled = !name || !total || !quantity || !price;
 		} else {
 			addDisabled = false;
 		}
 	}
 
-	// TODO: If invalid req, inline style red border and inline a placeholder with the error message
 	const onSubmit = async () => {
-		console.log('createLobby onSubmit');
+		isFetching = true;
+
+		const validLobbyRes = await fetch(`http://localhost:2400/validate/${lobbyName}/${username}`);
+		const resJSON = await validLobbyRes.json();
+
+		const reason: string = resJSON?.reason.toLowerCase();
+
+		if (!resJSON.ok || !resJSON.sucess) {
+			if (!reason) {
+				error = { code: 'Internal', message: 'Internal server error. Please try again later.' };
+			} else if (reason == 'bad request') {
+				error = { code: 'Valid', message: '' };
+			} else if (reason.includes('username')) {
+				error = {
+					code: 'Username',
+					message: `Username "${username}" is not available in lobby ${lobbyName}.`
+				};
+			} else if (reason.includes('lobby')) {
+				error = { code: 'Lobby', message: `Could not find lobby "${lobbyName}".` };
+			}
+
+			isFetching = false;
+			return;
+		}
 
 		const createRes = await fetch('http://localhost:2400/create_lobby', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ lobbyName, initialState: data })
 		});
+		const createdJSON = await createRes.json();
 
-		if (createRes.ok) {
-			const createJson = await createRes.json();
-			console.log(createJson);
+		if (!createdJSON.ok || !createdJSON.success) {
+			error = { code: 'Internal', message: 'Internal server error. Please try again later.' };
 
-			if (!!createJson.created) goto(`/lobby/?id=${lobbyName}&username=${username}`);
+			isFetching = false;
+			return;
 		}
+		goto(`/lobby/?id=${lobbyName}&username=${username}`);
 	};
 </script>
 
@@ -59,22 +83,25 @@
 			<h1 class="text-2xl font-semibold tracking-tight">Create a Lobby</h1>
 		</div>
 
-		<LobbyInput class="w-full" bind:error bind:username bind:lobbyName />
+		<div class="w-full">
+			<LobbyInput class="w-full" bind:error={error.code} bind:username bind:lobbyName />
+			<p class={cn('text-center text-sm text-red-600', !error.message && 'hidden')}>
+				{error.message}
+			</p>
+		</div>
 
 		<div class="mt-2 flex w-full items-center">
 			<Label class="align-text-bottom text-2xl">Receipt Items</Label>
-			{#key addDisabled}
-				<Button
-					disabled={addDisabled}
-					class="ml-auto h-8 w-12"
-					on:click={() => {
-						//!!! DO NOT TOUCH !!!
-						data = [...data.reverse(), { name: '', total: '', quantity: '', price: '' }].reverse();
-					}}
-				>
-					<Plus />
-				</Button>
-			{/key}
+			<Button
+				disabled={addDisabled}
+				class="ml-auto h-8 w-12"
+				on:click={() => {
+					//!!! DO NOT TOUCH !!!
+					data = [...data.reverse(), { name: '', total: '', quantity: '', price: '' }].reverse();
+				}}
+			>
+				<Plus />
+			</Button>
 		</div>
 
 		<div class="h-full w-full">
@@ -94,5 +121,9 @@
 			{/key}
 		</div>
 	</div>
-	<Button class="mx-auto mb-2 mt-auto h-12 w-full text-lg" on:click={onSubmit}>Create Lobby</Button>
+	<Button
+		class="mx-auto mb-2 mt-auto h-12 w-full text-lg"
+		disabled={isFetching || data.length == 0 || addDisabled}
+		on:click={onSubmit}>Create Lobby</Button
+	>
 </div>
