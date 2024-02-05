@@ -1,5 +1,3 @@
-type Validation = 'NoLobby' | 'BadUsername' | 'Valid';
-
 export type SocketUser = { username: string; socketId: string };
 
 export type ItemData = { name: string; total: string; quantity: string; price: string };

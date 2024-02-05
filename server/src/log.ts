@@ -7,20 +7,18 @@ type LogData = {
 	info?: string;
 };
 
-const log = (params: LogData) => {
-	const { eventType, event, namespace } = params;
-
+const log = (
+	eventType: 'RECV' | 'SEND' | 'ERR',
+	namespace: string,
+	event: string,
+	payload?: any,
+	info?: string
+) => {
 	const paramString =
-		Object.entries(params).length == 0
-			? ''
-			: ':' +
-				Object.entries(params).reduce((acc: string, [key, value]) => {
-					if (key == 'eventType' || key == 'event' || key == 'namespace') return acc;
-
-					const formattedValue = typeof value == 'object' ? JSON.stringify(value, null, 2) : value;
-					acc += `\n${key} = ${formattedValue}`;
-					return acc;
-				}, '');
+		(payload || info) &&
+		':' +
+			(payload ? `\npayload = ${JSON.stringify(payload)}` : '') +
+			(info ? `\ninfo = ${info}` : '');
 
 	const date = new Date();
 	const hours = `${date.getHours()}`.padStart(2, '0');

@@ -2,140 +2,87 @@ import { Server } from 'socket.io';
 import { Lobby } from './Lobby';
 import log from './log';
 
-export default (wss: Server, namespace: string, lobby: Lobby, ttl: number = 60 * 1000 * 10) => {
-	wss.of(namespace).timeout(ttl).disconnectSockets(true);
+export default (wss: Server, namespace: string, lobby: Lobby, ttl: number) => {
+	const namespacedConnection = wss.of(namespace);
 
-	wss.of(namespace).on('connection', (socket) => {
-		log({ eventType: 'RECV', namespace: namespace, event: 'connection' });
+	setTimeout(() => {
+		console.log(`Shutting down namespace ${namespace}.`);
+		namespacedConnection.disconnectSockets(true);
+		namespacedConnection.removeAllListeners();
+		// wss._nsps.delete(namespace);
+	}, ttl);
+
+	namespacedConnection.on('connection', (socket) => {
+		log('RECV', namespace, 'connection');
 
 		socket.on('register', (payload, callback) => {
 			const username = payload;
-			log({
-				eventType: 'RECV',
-				namespace: namespace,
-				event: 'register',
-				payload: username,
-				user: username
-			});
+			log('RECV', namespace, 'register', username, username);
 
 			const registeredUser = lobby.getUserByUsername(username);
+
 			if (registeredUser && registeredUser.socketId != socket.id) {
-				log({
-					eventType: 'SEND',
-					namespace: namespace,
-					event: 'register',
-					payload: registeredUser,
-					info: `Rejected as username "${username}" is already registered on a different socket.`
-				});
+				log(
+					'SEND',
+					namespace,
+					'register',
+					payload,
+					`Rejected as "${username}" is registered on a different socket.`
+				);
 				return callback({ status: 'Failure' });
 			}
 
 			lobby.addUser({ username: username, socketId: socket.id });
 			const state = lobby.getState();
 			const response = { entries: state.entries, contributors: state.users.map((x) => x.username) };
-			log({
-				eventType: 'SEND',
-				namespace: namespace,
-				event: 'register',
-				payload: response,
-				user: username
-			});
+
+			log('SEND', namespace, 'register', response, username);
 			callback({ status: 'Success', data: response });
 
-			wss.of(namespace).sockets.forEach((clientSocket) => {
-				if (clientSocket.id == socket.id) return;
-				const receipient = lobby.getUserBySocket(clientSocket.id);
-				if (!receipient) return;
+			log('SEND', namespace, 'join', username, `Sent to "registered" room.`);
+			namespacedConnection.to('registered').emit('join', username);
 
-				log({
-					eventType: 'SEND',
-					namespace: namespace,
-					event: 'join',
-					payload: username,
-					info: `Sent to ${receipient.username}.`
-				});
-
-				clientSocket.emit('join', username);
-			});
+			socket.join('registered');
 		});
 
-		socket.on('update', (payload) => {
+		socket.on('update', async (payload) => {
 			if (!lobby.getUserBySocket(socket.id))
-				return log({
-					eventType: 'RECV',
-					namespace: namespace,
-					event: 'update',
-					payload: payload,
-					info: 'Rejected message as socket is not registered.'
-				});
+				return log(
+					'RECV',
+					namespace,
+					'update',
+					payload,
+					'Rejected message as socket is not registered.'
+				);
 
-			log({
-				eventType: 'RECV',
-				namespace: namespace,
-				event: 'update',
-				payload: payload
-			});
+			log('RECV', namespace, 'update', payload);
 
 			// TODO: Validation
 			const { username, itemName, amount } = payload;
 			lobby.upsertContribution(username, itemName, amount);
 
-			wss.of(namespace).sockets.forEach((clientSocket) => {
-				const receipient = lobby.getUserBySocket(clientSocket.id);
-				if (!receipient) return;
-
-				log({
-					eventType: 'SEND',
-					namespace: namespace,
-					event: 'update',
-					payload: payload,
-					info: `Sent to ${receipient.username}.`
-				});
-				clientSocket.emit('update', payload);
-			});
+			log('SEND', namespace, 'update', payload, `Sent to "registered" room.`);
+			namespacedConnection.to('registered').emit('update', payload);
 		});
 
 		socket.on('disconnect', () => {
 			const leaverName = lobby.getUserBySocket(socket.id)?.username;
 
-			if (!leaverName) {
-				return log({
-					eventType: 'RECV',
-					namespace: namespace,
-					event: 'disconnect',
-					info: `Anon user disconnected.`
-				});
-			}
+			if (!leaverName) return log('RECV', namespace, 'disconnect', `Anon user disconnected.`);
 
-			log({
-				eventType: 'RECV',
-				namespace: namespace,
-				event: 'disconnect',
-				info: `User ${leaverName} disconnected.`
-			});
+			log('RECV', namespace, 'disconnect', `User ${leaverName} disconnected.`);
+			socket.leave('registered');
 
-			if (!lobby.removeUser(leaverName)) {
-				return log({
-					eventType: 'ERR',
-					namespace: namespace,
-					event: 'disconnect',
-					info: `User ${leaverName} disconnected but not found in state.`
-				});
-			}
+			if (!lobby.removeUser(leaverName))
+				return log(
+					'ERR',
+					namespace,
+					'disconnect',
+					`User ${leaverName} disconnected but not found in state.`
+				);
 
-			wss.of(namespace).sockets.forEach((clientSocket) => {
-				const receipient = lobby.getUserBySocket(clientSocket.id);
-				if (!receipient) return;
-
-				log({
-					eventType: 'SEND',
-					namespace: namespace,
-					event: 'leave',
-					payload: leaverName,
-					info: `Sent to ${receipient.username}.`
-				});
-				clientSocket.emit('leave', leaverName);
-			});
+			log('SEND', namespace, 'leave', leaverName, `Sent to "registered" room.`);
+			namespacedConnection.to('registered').emit('leave', leaverName);
 		});
 	});
 };

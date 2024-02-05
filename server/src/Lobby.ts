@@ -17,22 +17,17 @@ export class Lobby {
 	}
 
 	removeUser(username: string): boolean {
-		if (!this.state.users.find((x) => x.username == username)) {
-			return false;
-		}
-
 		if (
+			!this.state.users.find((x) => x.username == username) &&
 			!this.state.entries.reduce((acc, x) => {
-				return (
-					acc ||
-					x.contributions.reduce((acc, x) => {
-						return acc || x.username == username;
-					}, false)
-				);
+				const hasUser = x.contributions.reduce((acc, x) => {
+					return acc || x.username == username;
+				}, false);
+
+				return acc || hasUser;
 			}, false)
-		) {
+		)
 			return false;
-		}
 
 		this.state.users = [...this.state.users.filter((user) => user.username != username)];
 		this.state.entries = this.state.entries.map((entry) => {
