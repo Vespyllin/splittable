@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { ArrowLeft } from 'radix-icons-svelte';
 
 	import MinimalHeader from '$lib/components/layout/header.svelte';
 	import ContributionDialog from '$lib/components/contributions/contributionDialog.svelte';
@@ -10,8 +11,8 @@
 	import { goto } from '$app/navigation';
 
 	import type { Lobby } from '$lib/types/state';
-	import type { UpdatePayload } from '$lib/types/server.js';
-	import { ArrowLeft, IconjarLogo } from 'radix-icons-svelte';
+	import type { UpdatePayload } from '$lib/types/server';
+	import { PUBLIC_SOCKET_ENDPOINT } from '$env/static/public';
 
 	export let data;
 
@@ -20,12 +21,11 @@
 		entries: []
 	};
 
-	const socket = io(`ws://localhost:3000/${data.lobbyId}`);
+	const socket = io(`${PUBLIC_SOCKET_ENDPOINT}/${data.lobbyId}`);
 
 	const init = async () => {
 		const registerRes = await socket.timeout(3000).emitWithAck('register', data.username);
 
-		console.log(registerRes);
 		if (!registerRes || registerRes.status == 'Failure') {
 			socket.disconnect();
 			throw new Error('Could not register with server.');

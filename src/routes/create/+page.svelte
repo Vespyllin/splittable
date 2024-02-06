@@ -11,6 +11,7 @@
 	import type { ValidationCode, ItemData } from '$lib/types/state';
 	import { Plus } from 'radix-icons-svelte';
 	import { cn } from '$lib/utils';
+	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 
 	let error: { code: ValidationCode; message?: string } = { code: 'Valid' };
 
@@ -19,57 +20,59 @@
 
 	let data: ItemData[] = [];
 	let addDisabled = false;
+	let createDisabled = true;
 	let isFetching = false;
 
-	$: {
-		if (data.length != 0) {
-			const { name, total, quantity, price } = data[0];
-			addDisabled = !name || !total || !quantity || !price;
-		} else {
-			addDisabled = false;
-		}
+	$: if (data.length != 0) {
+		const { name, total, quantity, price } = data[0];
+		addDisabled = !name || !total || !quantity || !price;
+	} else {
+		addDisabled = false;
 	}
+
+	$: createDisabled = isFetching || data.length == 0 || addDisabled || !username || !lobbyName;
 
 	const onSubmit = async () => {
 		isFetching = true;
 
-		const validLobbyRes = await fetch(`http://localhost:2400/validate/${lobbyName}/${username}`);
-		const resJSON = await validLobbyRes.json();
+		try {
+			const existsRes = await fetch(`${PUBLIC_API_ENDPOINT}/exists/${lobbyName}`);
+			const exists: { success: boolean; data?: { lobby: boolean; username?: boolean } } =
+				await existsRes.json();
 
-		const reason: string = resJSON?.reason.toLowerCase();
-
-		if (!resJSON.ok || !resJSON.sucess) {
-			if (!reason) {
-				error = { code: 'Internal', message: 'Internal server error. Please try again later.' };
-			} else if (reason == 'bad request') {
-				error = { code: 'Valid', message: '' };
-			} else if (reason.includes('username')) {
+			if (!existsRes.ok || !exists.success) {
+				console.log('not ok');
 				error = {
-					code: 'Username',
-					message: `Username "${username}" is not available in lobby ${lobbyName}.`
+					code: 'Internal',
+					message: 'Internal server error. Please try again later.'
 				};
-			} else if (reason.includes('lobby')) {
-				error = { code: 'Lobby', message: `Could not find lobby "${lobbyName}".` };
+				return;
 			}
 
-			isFetching = false;
-			return;
-		}
+			if (exists?.data?.lobby) {
+				error = { code: 'Lobby', message: `Lobby "${lobbyName}" already exists.` };
+				return;
+			}
 
-		const createRes = await fetch('http://localhost:2400/create_lobby', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ lobbyName, initialState: data })
-		});
-		const createdJSON = await createRes.json();
+			const createRes = await fetch(`${PUBLIC_API_ENDPOINT}/create_lobby`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ lobbyName, initialState: data })
+			});
 
-		if (!createdJSON.ok || !createdJSON.success) {
+			const create: { success: boolean } = await createRes.json();
+
+			if (!createRes.ok || !create.success) {
+				error = { code: 'Internal', message: 'Internal server error. Please try again later.' };
+				return;
+			} else {
+				goto(`/lobby/?id=${lobbyName}&username=${username}`);
+			}
+		} catch (e) {
 			error = { code: 'Internal', message: 'Internal server error. Please try again later.' };
-
+		} finally {
 			isFetching = false;
-			return;
 		}
-		goto(`/lobby/?id=${lobbyName}&username=${username}`);
 	};
 </script>
 
@@ -123,7 +126,7 @@
 	</div>
 	<Button
 		class="mx-auto mb-2 mt-auto h-12 w-full text-lg"
-		disabled={isFetching || data.length == 0 || addDisabled}
+		disabled={createDisabled}
 		on:click={onSubmit}>Create Lobby</Button
 	>
 </div>

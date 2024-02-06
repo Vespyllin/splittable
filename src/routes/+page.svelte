@@ -7,6 +7,7 @@
 	import type { ValidationCode } from '$lib/types/state';
 	import { goto } from '$app/navigation';
 	import { cn } from '$lib/utils';
+	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 
 	let isFetching = false;
 
@@ -18,27 +19,41 @@
 	const onSubmit = async () => {
 		isFetching = true;
 
-		const validLobbyRes = await fetch(`http://localhost:2400/validate/${lobbyName}/${username}`);
-		const resJSON = await validLobbyRes.json();
+		try {
+			const existsRes = await fetch(`${PUBLIC_API_ENDPOINT}/exists/${lobbyName}/${username}`);
+			const exists: { success: boolean; data?: { lobby: boolean; username?: boolean } } =
+				await existsRes.json();
 
-		if (resJSON.ok && resJSON.sucess) return goto(`lobby/?id=${lobbyName}&username=${username}`);
+			const { success, data } = exists;
 
-		const reason: string = resJSON?.reason.toLowerCase();
+			if (existsRes.ok && success && data?.lobby && !data?.username) {
+				return goto(`lobby/?id=${lobbyName}&username=${username}`);
+			}
 
-		if (!reason) {
+			if (!existsRes.ok || !exists.success) {
+				console.log('not ok');
+				error = {
+					code: 'Internal',
+					message: 'Internal server error. Please try again later.'
+				};
+				return;
+			}
+
+			if (!data?.lobby) {
+				console.log('no lobby');
+				error = { code: 'Lobby', message: `Could not find lobby "${lobbyName}".` };
+			} else if (data?.username) {
+				console.log('username');
+				error = {
+					code: 'Username',
+					message: `Username "${username}" is not available in lobby ${lobbyName}.`
+				};
+			}
+		} catch (e) {
 			error = { code: 'Internal', message: 'Internal server error. Please try again later.' };
-		} else if (reason == 'bad request') {
-			error = { code: 'Valid', message: '' };
-		} else if (reason.includes('username')) {
-			error = {
-				code: 'Username',
-				message: `Username "${username}" is not available in lobby ${lobbyName}.`
-			};
-		} else if (reason.includes('lobby')) {
-			error = { code: 'Lobby', message: `Could not find lobby "${lobbyName}".` };
+		} finally {
+			isFetching = false;
 		}
-
-		isFetching = false;
 	};
 </script>
 
@@ -53,17 +68,17 @@
 			<p class="text-lg text-muted-foreground">Join an existing lobby and get splitting 🪓</p>
 		</div>
 
-		<div class="mt-1 flex w-full flex-col space-y-2">
+		<div class="mt-1 flex w-full flex-col">
 			<LobbyInput
 				class="flex w-full flex-col space-y-2"
 				bind:error={error.code}
 				bind:username
 				bind:lobbyName
 			/>
-			<p class={cn('text-center text-sm text-red-600', !error.message && 'hidden')}>
+			<p class={cn('mt-1 text-center text-sm text-red-600', !error.message && 'hidden')}>
 				{error.message}
 			</p>
-			<Button class="mx-auto  h-10 w-[97.5%] text-lg" on:click={onSubmit} disabled={isFetching}>
+			<Button class="mx-auto mt-2 h-10 w-[97.5%] text-lg" on:click={onSubmit} disabled={isFetching}>
 				Join Lobby
 			</Button>
 		</div>
@@ -72,9 +87,9 @@
 	<h1 class="mx-auto mb-1 text-2xl tracking-tight">Or</h1>
 	<div class="text-center">
 		<a href="/create">
-			<Button disabled={isFetching} class="mx-auto mt-1 h-10 w-[97.5%] text-lg"
-				>Create Your Own Lobby</Button
-			>
+			<Button disabled={isFetching} class="mx-auto mt-1 h-10 w-[97.5%] text-lg">
+				Create Your Own Lobby
+			</Button>
 		</a>
 	</div>
 </div>
