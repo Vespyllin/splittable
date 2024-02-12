@@ -1,0 +1,7 @@
+{
+	"/": [],
+	"/create": [],
+	"/lobby": [
+		"src/routes/lobby/+page.server.ts"
+	]
+}
