@@ -1,68 +1,105 @@
-import express from 'express';
-import cors from 'cors';
-import { Server } from 'socket.io';
+import express from 'express'
+import cors from 'cors'
+import { Server } from 'socket.io'
 
-import initSocket from './SocketService';
-import { Lobby } from './Lobby';
+import { Lobby } from './Lobby'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import { serverLog } from './log'
+import { ResPayload } from './types/server'
+import { LobbySocket } from './LobbySocket'
 
-const SERVER_PORT = 3388;
-const SOCKET_PORT = 4430;
+const SERVER_PORT = 3388
+const SOCKET_PORT = 4430
 
 const main = () => {
-	const app = express();
-	app.use(express.json());
-	app.use(cors());
+	const app = express()
 
-	let activeLobbies: { name: string; state: Lobby; expires: number }[] = [];
+	app.use(express.json())
+	app.use(cors())
+	app.use(helmet())
+	app.use(rateLimit({ windowMs: 1 * 60 * 1000, max: 25 }))
+
+	let activeLobbies: LobbySocket[] = []
 	setInterval(() => {
-		const oldLobbies = [...activeLobbies];
-		activeLobbies = activeLobbies.filter((x) => {
-			return x.expires > new Date().getTime();
-		});
-		if (oldLobbies.length != activeLobbies.length)
-			console.log(`Pruned ${oldLobbies.length - activeLobbies.length} lobbies`);
-	}, 1000);
+		let closedLobbyNames: string[] = []
 
-	const wss = new Server(SOCKET_PORT, { cors: { origin: '*' } });
-	const ttl = 60 * 1000 * 10; // 10 minutes
+		let closedLobbies = activeLobbies.filter((x) => !x.isAlive())
+		activeLobbies = activeLobbies.filter((x) => x.isAlive())
 
-	app.get('/exists/:lobbyName/:username?', (req, res) => {
-		const { lobbyName, username } = req.params;
+		closedLobbies.forEach((x) => x.close())
+		if (closedLobbies.length > 0) console.log('pruned')
+		// serverLog(
+		// 	'INFO',
+		// 	'Internal',
+		// 	undefined,
+		// 	undefined,
+		// 	`Pruned ${
+		// 		closedLobbyNames.length
+		// 	} lobbies:\n${closedLobbyNames.toString()}`
+		// )
+	}, 1000)
 
-		if (!lobbyName) return res.json({ success: false }).status(400);
+	const wss = new Server(SOCKET_PORT, { cors: { origin: '*' } })
+	const ttl = 60 * 1000 * 30 // 30 minutes
 
-		const foundLobby = activeLobbies.find((x) => x.name == lobbyName);
-		const lobbyExists = !!foundLobby;
+	app.get('/exists/:lobby_name/:username?', (req, res) => {
+		const { lobby_name: lobbyName, username } = req.params
+
+		if (!lobbyName) {
+			const resPayload: ResPayload = { success: false, reason: 'Bad Request' }
+			serverLog('REQ', '/exists', req.params, resPayload)
+			return res.json(resPayload).status(400)
+		}
+
+		const foundLobby = activeLobbies.find((x) => x.getNamespace() == lobbyName)
+		const lobbyExists = !!foundLobby
 		const usernameExists = !username
 			? undefined
-			: lobbyExists && !!foundLobby?.state.getUserByUsername(username);
+			: lobbyExists && !!foundLobby?.getState().getUserByUsername(username)
 
-		return res
-			.json({ success: true, data: { lobby: lobbyExists, username: usernameExists } })
-			.status(200);
-	});
+		const resPayload: ResPayload = {
+			success: true,
+			data: { lobby: lobbyExists, username: usernameExists },
+		}
+		serverLog('REQ', '/exists', req.params, resPayload)
+		return res.json(resPayload).status(200)
+	})
 
 	app.post('/create_lobby', (req, res) => {
-		const { lobbyName, initialState } = req.body;
+		const { lobby_name: lobbyName, initial_state: initialState } = req.body
 
-		if (!lobbyName || !initialState)
-			return res.json({ success: false, reason: 'Bad request' }).status(400);
+		if (!lobbyName || !initialState) {
+			const resPayload: ResPayload = { success: false, reason: 'Bad request' }
+			serverLog('REQ', '/create_lobby', { lobbyName, initialState }, resPayload)
+			return res.json(resPayload).status(400)
+		}
 
-		// TODO: payload validation
+		// TODO: ZOD Payload Validation and Parsing
 
-		if (activeLobbies.find((x) => x.name == lobbyName))
-			return res.json({ success: false, reason: 'Lobby already exists' }).status(400);
+		if (activeLobbies.find((x) => x.getNamespace() == lobbyName)) {
+			const resPayload: ResPayload = {
+				success: false,
+				reason: 'Lobby already exists',
+			}
+			serverLog('REQ', '/create_lobby', { lobbyName, initialState }, resPayload)
+			return res.json(resPayload).status(400)
+		}
 
-		const lobby = new Lobby(initialState);
-		initSocket(wss, lobbyName, lobby, ttl);
-		activeLobbies.push({ name: lobbyName, state: lobby, expires: new Date().getTime() + ttl });
+		const lobby = new Lobby(initialState)
+		const lobbySocket = new LobbySocket(wss, lobbyName, lobby, ttl)
+		lobbySocket.start()
 
-		res.json({ success: true }).status(200);
-	});
+		activeLobbies.push(lobbySocket)
+
+		const resPayload: ResPayload = { success: true }
+		serverLog('REQ', '/create_lobby', { lobbyName, initialState }, resPayload)
+		res.json(resPayload).status(200)
+	})
 
 	app.listen(SERVER_PORT, () => {
-		console.log(`Hosting on port ${SERVER_PORT}`);
-	});
-};
+		console.log(`Hosting on port ${SERVER_PORT}`)
+	})
+}
 
-main();
+main()

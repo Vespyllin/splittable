@@ -3,11 +3,11 @@
 
 	import ItemContribution from '$lib/components/contributions/Entry.svelte';
 
-	import type { ContributionData, EntryData } from '$lib/types/state';
+	import type { EntryData } from '$lib/types/state';
 	import { Minus, Plus } from 'radix-icons-svelte';
 
 	const plusHandler = () => {
-		if (numerator >= denominator) numerator = numerator + 1;
+		if (numerator >= denominator) numerator += 1;
 		else denominator = Math.max(denominator - 1, 1);
 	};
 
@@ -18,6 +18,8 @@
 
 	let numerator = 1;
 	let denominator = 1;
+	let plusDisabled = false;
+	$: plusDisabled = numerator == parseInt(entry.item.quantity);
 
 	export let entry: EntryData;
 	export let contributionAmount: number = 1;
@@ -35,7 +37,7 @@
 
 <div>
 	<h1 class="text-semibold mb-4 justify-center text-3xl">
-		Set your <span class="font-semibold text-primary"> Contribution </span>
+		Set your <span class="text-primary font-semibold"> Contribution </span>
 	</h1>
 	<ItemContribution {entry} />
 
@@ -51,7 +53,7 @@
 			{/if}
 		</div>
 		<div>
-			<Button class="h-full w-full" on:click={() => plusHandler()}>
+			<Button class="h-full w-full" disabled={plusDisabled} on:click={() => plusHandler()}>
 				<Plus />
 			</Button>
 		</div>

@@ -1,14 +1,15 @@
-type LogData = {
-	eventType: 'RECV' | 'SEND' | 'ERR';
-	namespace: string;
-	event: string;
-	payload?: any;
-	user?: string;
-	info?: string;
-};
+const log = (logString: string) => {
+	const date = new Date()
+	const hours = `${date.getHours()}`.padStart(2, '0')
+	const minutes = `${date.getMinutes()}`.padStart(2, '0')
+	const seconds = `${date.getSeconds()}`.padStart(2, '0')
+	const timestamp = `${hours}:${minutes}:${seconds}`
 
-const log = (
-	eventType: 'RECV' | 'SEND' | 'ERR',
+	console.log(`${timestamp} - ${logString}`)
+}
+
+export const wsLog = (
+	eventType: 'RES' | 'RECV' | 'SEND' | 'ERR' | 'INFO',
 	namespace: string,
 	event: string,
 	payload?: any,
@@ -18,23 +19,26 @@ const log = (
 		(payload || info) &&
 		':' +
 			(payload ? `\npayload = ${JSON.stringify(payload)}` : '') +
-			(info ? `\ninfo = ${info}` : '');
+			(info ? `\ninfo = ${info}` : '')
 
-	const date = new Date();
-	const hours = `${date.getHours()}`.padStart(2, '0');
-	const minutes = `${date.getMinutes()}`.padStart(2, '0');
-	const seconds = `${date.getSeconds()}`.padStart(2, '0');
-	const timestamp = `${hours}:${minutes}:${seconds}`;
+	if (eventType == 'RECV' || eventType == 'SEND')
+		log(`${eventType} on "${event}" in /${namespace}` + paramString)
+	else log(`${eventType}` + paramString)
+}
 
-	let message = `${timestamp} - `;
+export const serverLog = (
+	eventType: 'REQ' | 'INFO',
+	endpoint: string,
+	reqPayload?: any,
+	resPayload?: any,
+	info?: string
+) => {
+	const paramString =
+		(reqPayload || resPayload || info) &&
+		':' +
+			(reqPayload ? `\nRequest Payload = ${JSON.stringify(reqPayload)}` : '') +
+			(resPayload ? `\nResponse Payload = ${JSON.stringify(resPayload)}` : '') +
+			(info ? `\ninfo = ${info}` : '')
 
-	if (eventType == 'RECV') message += `${eventType} on "${event}" on /${namespace}`;
-	else if (eventType == 'SEND') message += `${eventType} from "${event}" on /${namespace}`;
-	else message += `${eventType}`;
-
-	message += paramString;
-
-	console.log(message);
-};
-
-export default log;
+	log(`${eventType} on ${endpoint}` + paramString)
+}

@@ -41,7 +41,6 @@
 				await existsRes.json();
 
 			if (!existsRes.ok || !exists.success) {
-				console.log('not ok');
 				error = {
 					code: 'Internal',
 					message: 'Internal server error. Please try again later.'
@@ -57,7 +56,7 @@
 			const createRes = await fetch(`${PUBLIC_API_ENDPOINT}/create_lobby`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ lobbyName, initialState: data })
+				body: JSON.stringify({ lobby_name: lobbyName, initial_state: data })
 			});
 
 			const create: { success: boolean } = await createRes.json();
@@ -109,7 +108,7 @@
 
 		<div class="h-full w-full">
 			{#if data.length == 0}
-				<div class="flex items-center px-16 py-2 text-muted-foreground">
+				<div class="text-muted-foreground flex items-center px-16 py-2">
 					<h1 class="text-lg">🤔 You can't split a bill with no items...</h1>
 				</div>
 			{/if}

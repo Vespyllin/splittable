@@ -1,7 +1,6 @@
 <script>
 	import Footer from '$lib/components/layout/footer.svelte';
 	import '../app.pcss';
-	import { ModeWatcher } from 'mode-watcher';
 </script>
 
 <svelte:head>

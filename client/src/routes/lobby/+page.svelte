@@ -13,8 +13,14 @@
 	import type { Lobby } from '$lib/types/state';
 	import type { UpdatePayload } from '$lib/types/server';
 	import { PUBLIC_SOCKET_ENDPOINT } from '$env/static/public';
+	import { cn } from '$lib/utils';
 
 	export let data;
+
+	const Euro = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'EUR'
+	});
 
 	let state: Lobby = {
 		contributors: [],
@@ -96,7 +102,12 @@
 		<h1 class="text-2xl font-semibold">Lobby members</h1>
 		<div class="my-2 flex w-full flex-wrap">
 			{#each state.contributors as contributor, idx}
-				<p class="mx-1 text-xl text-primary">
+				<p
+					class={cn(
+						'mx-1 text-xl',
+						contributor == data.username ? 'text-primary' : 'text-muted-foreground'
+					)}
+				>
 					{#if idx != state.contributors.length - 1}
 						{contributor}<span class="text-foreground">,</span>
 					{:else}
@@ -104,6 +115,25 @@
 					{/if}
 				</p>
 			{/each}
+		</div>
+		<div class="flex">
+			<h2 class="mr-2 text-lg">My Total:</h2>
+			<p class="text-lg">
+				{Euro.format(
+					state.entries
+						.map((x) => {
+							const filteredContributions = x.contributions.filter(
+								(x) => x.username == data.username
+							);
+
+							return (
+								parseFloat(x.item.price) *
+								(filteredContributions.length > 0 ? filteredContributions[0].amount : 0)
+							);
+						})
+						.reduce((acc, val) => acc + val, 0)
+				)}
+			</p>
 		</div>
 		<div class="mt-4">
 			<h1 class="text-2xl font-semibold">Entries</h1>
@@ -122,14 +152,14 @@
 						}}
 					/>
 					{#if state.entries.length - 1 != idx}
-						<Separator class="m-1 mx-auto mb-1 mt-4 w-[75%] bg-primary" />
+						<Separator class="bg-primary m-1 mx-auto mb-1 mt-4 w-[75%]" />
 					{/if}
 				{/each}
 			</div>
 		</div>
 	{:catch error}
 		<div class="flex h-full w-full flex-col">
-			<h1 class="text-center text-3xl font-semibold text-primary">
+			<h1 class="text-primary text-center text-3xl font-semibold">
 				An Unexpected Error has Occurred
 			</h1>
 			<p class="mt-4 text-lg">Please try to join the lobby again through the home page.</p>

@@ -17,7 +17,7 @@
 <div class={cn('flex flex-col space-y-2', className)} on:change={() => {}}>
 	<Input
 		id="username"
-		placeholder="nickname"
+		placeholder="Username"
 		type="text"
 		autocapitalize="none"
 		autocorrect="off"
@@ -27,7 +27,7 @@
 	/>
 	<Input
 		id="lobby"
-		placeholder="lobby name"
+		placeholder="Lobby Name"
 		type="text"
 		autocapitalize="none"
 		autocorrect="off"
