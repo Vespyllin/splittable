@@ -34,7 +34,13 @@
 						disabled={contributionAmount == defaultValue}
 						on:click={() => sendUpdate(contributionAmount)}>Update</Button
 					>
-					<Button class="h-11 w-1/2 text-xl" on:click={() => sendUpdate(0)}>Remove</Button>
+					<Button
+						class="h-11 w-1/2 text-xl"
+						on:click={() => {
+							contributionAmount = 1;
+							sendUpdate(0);
+						}}>Remove</Button
+					>
 				</div>
 			{/if}
 		</Dialog.Close>

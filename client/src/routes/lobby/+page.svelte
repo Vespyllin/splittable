@@ -116,9 +116,10 @@
 				</p>
 			{/each}
 		</div>
-		<div class="flex">
-			<h2 class="mr-2 text-lg">My Total:</h2>
-			<p class="text-lg">
+
+		<div class="my-2 flex">
+			<h2 class="mr-2 text-xl font-semibold">My Total:</h2>
+			<p class="text-primary text-xl font-semibold">
 				{Euro.format(
 					state.entries
 						.map((x) => {
@@ -135,7 +136,8 @@
 				)}
 			</p>
 		</div>
-		<div class="mt-4">
+
+		<div class="mt-4 h-full">
 			<h1 class="text-2xl font-semibold">Entries</h1>
 
 			<div class="flew grow flex-col">
@@ -157,7 +159,8 @@
 				{/each}
 			</div>
 		</div>
-	{:catch error}
+
+		<!-- {:catch error}
 		<div class="flex h-full w-full flex-col">
 			<h1 class="text-primary text-center text-3xl font-semibold">
 				An Unexpected Error has Occurred
@@ -167,6 +170,6 @@
 				<ArrowLeft size={35} />
 			</Button>
 			<p class="mt-4 text-lg text-red-600">Error Message: {error.message}</p>
-		</div>
+		</div> -->
 	{/await}
 </div>

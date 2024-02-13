@@ -19,7 +19,7 @@
 	let numerator = 1;
 	let denominator = 1;
 	let plusDisabled = false;
-	$: plusDisabled = numerator == parseInt(entry.item.quantity);
+	$: plusDisabled = numerator / denominator == parseInt(entry.item.quantity);
 
 	export let entry: EntryData;
 	export let contributionAmount: number = 1;
