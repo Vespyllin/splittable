@@ -28,16 +28,16 @@ const main = () => {
 		activeLobbies = activeLobbies.filter((x) => x.isAlive())
 
 		closedLobbies.forEach((x) => x.close())
-		if (closedLobbies.length > 0) console.log('pruned')
-		// serverLog(
-		// 	'INFO',
-		// 	'Internal',
-		// 	undefined,
-		// 	undefined,
-		// 	`Pruned ${
-		// 		closedLobbyNames.length
-		// 	} lobbies:\n${closedLobbyNames.toString()}`
-		// )
+		if (closedLobbies.length > 0)
+			serverLog(
+				'INFO',
+				'Internal',
+				undefined,
+				undefined,
+				`Pruned ${
+					closedLobbyNames.length
+				} lobbies:\n${closedLobbyNames.toString()}`
+			)
 	}, 1000)
 
 	const wss = new Server(SOCKET_PORT, { cors: { origin: '*' } })
