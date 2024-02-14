@@ -4,7 +4,7 @@
 	import SplashHeader from '$lib/components/layout/splashHeader.svelte';
 	import LobbyInput from '$lib/components/lobby/lobbyInput.svelte';
 
-	import type { ValidationCode } from '$lib/types/state';
+	import type { ValidationCode } from '$lib/types/lobby';
 	import { goto } from '$app/navigation';
 	import { cn } from '$lib/utils';
 	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
@@ -65,7 +65,7 @@
 	<div class="my-2 flex w-full flex-col items-center justify-center">
 		<div class="flex flex-col space-y-2 text-center">
 			<h1 class="text-3xl font-semibold tracking-tight">Join a Lobby</h1>
-			<p class="text-lg text-muted-foreground">Join an existing lobby and get splitting 🪓</p>
+			<p class="text-muted-foreground text-lg">Join an existing lobby and get splitting 🪓</p>
 		</div>
 
 		<div class="mt-1 flex w-full flex-col">

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Input from '$lib/components/ui/input/input.svelte';
 
-	import type { ValidationCode } from '$lib/types/state';
+	import type { ValidationCode } from '$lib/types/lobby';
 	import { cn } from '$lib/utils';
 
 	let className: string | undefined | null = undefined;
@@ -14,7 +14,7 @@
 	export let isLoading = false;
 </script>
 
-<div class={cn('flex flex-col space-y-2', className)} on:change={() => {}}>
+<div class={cn('space-y-2', className)} on:change={() => {}}>
 	<Input
 		id="username"
 		placeholder="Username"

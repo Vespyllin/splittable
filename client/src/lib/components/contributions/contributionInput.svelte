@@ -1,10 +1,11 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 
-	import ItemContribution from '$lib/components/contributions/Entry.svelte';
+	import ItemContribution from '$lib/components/contributions/entry.svelte';
 
-	import type { EntryData } from '$lib/types/state';
+	import type { EntryData } from '$lib/types/lobby';
 	import { Minus, Plus } from 'radix-icons-svelte';
+	import { Euro } from '$lib/util/util';
 
 	const plusHandler = () => {
 		if (numerator >= denominator) numerator += 1;
@@ -19,7 +20,7 @@
 	let numerator = 1;
 	let denominator = 1;
 	let plusDisabled = false;
-	$: plusDisabled = numerator / denominator == parseInt(entry.item.quantity);
+	$: plusDisabled = numerator / denominator == entry.item.quantity;
 
 	export let entry: EntryData;
 	export let contributionAmount: number = 1;
@@ -28,11 +29,6 @@
 	else denominator = 1 / contributionAmount;
 
 	$: contributionAmount = numerator / denominator;
-
-	const Euro = new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: 'EUR'
-	});
 </script>
 
 <div>
@@ -43,7 +39,7 @@
 
 	<div class="mt-4 grid h-12 w-full grid-cols-5 gap-2 p-1 text-2xl leading-[2.4rem]">
 		<div class="p-auto col-span-2 w-full rounded-md border text-center">
-			{Euro.format(parseFloat(entry.item.price) * (contributionAmount ?? 1))}
+			{Euro.format(entry.item.price * (contributionAmount ?? 1))}
 		</div>
 		<div class="col-span-1 rounded-md border text-center">
 			{#if denominator > 1}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { PUBLIC_SOCKET_ENDPOINT } from '$env/static/public';
+
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { ArrowLeft } from 'radix-icons-svelte';
@@ -10,17 +12,14 @@
 	import { io } from 'socket.io-client';
 	import { goto } from '$app/navigation';
 
-	import type { Lobby } from '$lib/types/state';
-	import type { UpdatePayload } from '$lib/types/server';
-	import { PUBLIC_SOCKET_ENDPOINT } from '$env/static/public';
 	import { cn } from '$lib/utils';
+	import type { Lobby, UpdatePayload } from '$lib/types/lobby';
+
+	import { usernameStore } from '$lib/store/username';
+	import { Euro } from '$lib/util/util';
 
 	export let data;
-
-	const Euro = new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: 'EUR'
-	});
+	$usernameStore = data.username;
 
 	let state: Lobby = {
 		contributors: [],
@@ -118,7 +117,7 @@
 		</div>
 
 		<div class="my-2 flex">
-			<h2 class="mr-2 text-xl font-semibold">My Total:</h2>
+			<h2 class="text-foreground mr-2 text-xl font-semibold">My Total:</h2>
 			<p class="text-primary text-xl font-semibold">
 				{Euro.format(
 					state.entries
@@ -128,7 +127,7 @@
 							);
 
 							return (
-								parseFloat(x.item.price) *
+								x.item.price *
 								(filteredContributions.length > 0 ? filteredContributions[0].amount : 0)
 							);
 						})

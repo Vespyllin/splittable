@@ -1,9 +1,11 @@
 <script lang="ts">
-	import type { ContributionData, EntryData } from '$lib/types/state';
-	import ItemContribution from './Entry.svelte';
 	import Button from '../ui/button/button.svelte';
 	import * as Dialog from '../ui/dialog';
+
+	import ItemContribution from './entry.svelte';
 	import ContributionInput from './contributionInput.svelte';
+
+	import type { EntryData } from '$lib/types/lobby';
 
 	export let entry: EntryData;
 	export let sendUpdate: (v: number) => void;

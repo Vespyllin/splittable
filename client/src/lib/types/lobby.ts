@@ -1,6 +1,6 @@
 export type ValidationCode = 'Lobby' | 'Username' | 'Valid' | 'Internal';
 
-export type ItemData = { name: string; total: string; quantity: string; price: string };
+export type ItemData = { name: string; total: number; quantity: number; price: number };
 
 export type ContributionData = { username: string; amount: number };
 
@@ -14,3 +14,5 @@ export type Lobby = {
 
 	entries: EntryData[];
 };
+
+export type UpdatePayload = { username: string; itemName: string; amount: number };

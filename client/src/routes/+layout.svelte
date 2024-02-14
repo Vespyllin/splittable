@@ -11,7 +11,7 @@
 	/>
 </svelte:head>
 
-<main class="flex h-screen max-h-svh flex-col overflow-hidden p-8 pb-2">
+<main class="flex h-screen max-h-svh flex-col p-8 pb-0">
 	<slot />
 	<Footer />
 </main>
