@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 
-	import ItemContribution from '$lib/components/contributions/entry.svelte';
+	import ItemContribution from '$lib/components/contributions/itemContribution.svelte';
 
 	import type { EntryData } from '$lib/types/lobby';
 
