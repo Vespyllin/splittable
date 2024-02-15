@@ -33,7 +33,7 @@
 
 <div>
 	<h1 class="text-semibold mb-4 justify-center text-3xl">
-		Set your <span class="text-primary font-semibold"> Contribution </span>
+		Set your <span class="font-semibold text-primary"> Contribution </span>
 	</h1>
 	<ItemContribution {entry} />
 

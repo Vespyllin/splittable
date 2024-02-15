@@ -22,11 +22,7 @@
 		<ContributionInput {entry} bind:contributionAmount />
 		<Dialog.Close class="mb-2 mt-2">
 			{#if !defaultValue}
-				<Button
-					class="h-11 w-full text-xl"
-					on:click
-					on:click={() => sendUpdate(contributionAmount)}
-				>
+				<Button class="h-11 w-full text-xl" on:click={() => sendUpdate(contributionAmount)}>
 					Save
 				</Button>
 			{:else}
