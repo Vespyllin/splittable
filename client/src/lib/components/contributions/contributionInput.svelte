@@ -4,8 +4,9 @@
 	import ItemContribution from '$lib/components/contributions/entry.svelte';
 
 	import type { EntryData } from '$lib/types/lobby';
+
 	import { Minus, Plus } from 'radix-icons-svelte';
-	import { Euro } from '$lib/util/util';
+	import { Euro } from '$lib/utils';
 
 	const plusHandler = () => {
 		if (numerator >= denominator) numerator += 1;
@@ -33,7 +34,7 @@
 
 <div>
 	<h1 class="text-semibold mb-4 justify-center text-3xl">
-		Set your <span class="font-semibold text-primary"> Contribution </span>
+		Set your <span class="text-primary font-semibold"> Contribution </span>
 	</h1>
 	<ItemContribution {entry} />
 

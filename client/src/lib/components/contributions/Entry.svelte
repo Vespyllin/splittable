@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { usernameStore } from '$lib/store/username';
-	import type { EntryData } from '$lib/types/lobby';
-	import { Euro } from '$lib/util/util';
-	import { cn } from '$lib/utils';
 	import { readonly } from 'svelte/store';
+
+	import type { EntryData } from '$lib/types/lobby';
+
+	import { usernameStore } from '$lib/store/username';
+	import { Euro, cn } from '$lib/utils';
 
 	export let entry: EntryData;
 
@@ -11,12 +12,10 @@
 
 	const entryStyle = 'flex h-9 border-b px-3 py-2 text-xl min-w-fit text-stone-200';
 	let isSettled = false;
-	$: {
-		isSettled =
-			entry.contributions.length != 0 &&
-			entry.contributions.map((x) => x.amount).reduce((acc, val) => (acc += val)) ==
-				entry.item.quantity;
-	}
+	$: isSettled =
+		entry.contributions.length != 0 &&
+		entry.contributions.map((x) => x.amount).reduce((acc, val) => (acc += val)) ==
+			entry.item.quantity;
 </script>
 
 <div class="my-1 grid grid-cols-1 gap-2">

@@ -12,11 +12,10 @@
 	import { io } from 'socket.io-client';
 	import { goto } from '$app/navigation';
 
-	import { cn } from '$lib/utils';
+	import { cn, Euro } from '$lib/utils';
 	import type { Lobby, UpdatePayload } from '$lib/types/lobby';
 
 	import { usernameStore } from '$lib/store/username';
-	import { Euro } from '$lib/util/util';
 
 	export let data;
 	$usernameStore = data.username;
@@ -158,8 +157,7 @@
 				{/each}
 			</div>
 		</div>
-
-		<!-- {:catch error}
+	{:catch error}
 		<div class="flex h-full w-full flex-col">
 			<h1 class="text-primary text-center text-3xl font-semibold">
 				An Unexpected Error has Occurred
@@ -169,6 +167,6 @@
 				<ArrowLeft size={35} />
 			</Button>
 			<p class="mt-4 text-lg text-red-600">Error Message: {error.message}</p>
-		</div> -->
+		</div>
 	{/await}
 </div>

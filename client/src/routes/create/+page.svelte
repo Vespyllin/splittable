@@ -9,9 +9,8 @@
 
 	import type { ValidationCode } from '$lib/types/lobby';
 	import { Plus } from 'radix-icons-svelte';
-	import { cn } from '$lib/utils';
+	import { cn, Euro } from '$lib/utils';
 	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
-	import { Euro } from '$lib/util/util';
 
 	type ItemFormData = { name: string; total: string; quantity: string; price: string }[];
 

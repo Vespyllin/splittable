@@ -4,7 +4,13 @@
 
 	import { cn } from '$lib/utils';
 	import { Trash } from 'radix-icons-svelte';
-	import { padDecimal, round, validateCurrency } from '$lib/util/util';
+	import { padDecimal, validateCurrency } from '$lib/utils';
+
+	const round = (value: number) => {
+		const roundedValue = Math.round(value * 100) / 100;
+		if (isNaN(roundedValue)) return value;
+		return roundedValue;
+	};
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
