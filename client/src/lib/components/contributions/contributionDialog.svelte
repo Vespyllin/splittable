@@ -2,7 +2,7 @@
 	import Button from '../ui/button/button.svelte';
 	import * as Dialog from '../ui/dialog';
 
-	import ItemContribution from './itemContribution.svelte';
+	import ContributionItem from './contributionItem.svelte';
 	import ContributionInput from './contributionInput.svelte';
 
 	import type { EntryData } from '$lib/types/lobby';
@@ -16,7 +16,7 @@
 
 <Dialog.Root>
 	<Dialog.Trigger class="w-full">
-		<ItemContribution {entry} />
+		<ContributionItem {entry} />
 	</Dialog.Trigger>
 	<Dialog.Content class="flex h-fit min-h-fit w-[90%] flex-col rounded-xl px-4">
 		<ContributionInput {entry} bind:contributionAmount />

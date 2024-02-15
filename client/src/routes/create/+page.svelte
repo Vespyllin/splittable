@@ -24,12 +24,12 @@
 	let createDisabled = true;
 	let isFetching = false;
 
-	$: if (data.length != 0) {
-		const { name, total, quantity, price } = data[0];
-		addDisabled = !name || !total || !quantity || !price;
-	} else {
-		addDisabled = false;
-	}
+	$: addDisabled =
+		data.length != 0 &&
+		!data.every((x) => {
+			const { name, total, quantity, price } = x;
+			return name && total && quantity && price;
+		});
 
 	$: createDisabled = isFetching || data.length == 0 || addDisabled || !username || !lobbyName;
 
@@ -54,10 +54,11 @@
 				return;
 			}
 
+			const [head, ...tail] = data;
 			const createRes = await fetch(`${PUBLIC_API_ENDPOINT}/create_lobby`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ lobby_name: lobbyName, initial_state: data })
+				body: JSON.stringify({ lobby_name: lobbyName, initial_state: [...tail, head] })
 			});
 
 			const create: { success: boolean } = await createRes.json();
@@ -116,7 +117,14 @@
 		<Button
 			class="ml-auto h-8 w-12"
 			on:click={() => {
-				data = [...data.reverse(), { name: '', total: '', quantity: '', price: '' }].reverse();
+				const newEntry = { name: '', total: '', quantity: '', price: '' };
+
+				if (data.length > 0) {
+					const [head, ...tail] = data;
+					data = [newEntry, ...tail, head];
+				} else {
+					data = [newEntry];
+				}
 			}}
 		>
 			<Plus />

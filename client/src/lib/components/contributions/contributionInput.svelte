@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 
-	import ItemContribution from '$lib/components/contributions/itemContribution.svelte';
+	import ContributionItem from '$lib/components/contributions/contributionItem.svelte';
 
 	import type { EntryData } from '$lib/types/lobby';
 
@@ -36,7 +36,7 @@
 	<h1 class="text-semibold mb-4 justify-center text-3xl">
 		Set your <span class="text-primary font-semibold"> Contribution </span>
 	</h1>
-	<ItemContribution {entry} />
+	<ContributionItem {entry} />
 
 	<div class="mt-4 grid h-12 w-full grid-cols-5 gap-2 p-1 text-2xl leading-[2.4rem]">
 		<div class="p-auto col-span-2 w-full rounded-md border text-center">

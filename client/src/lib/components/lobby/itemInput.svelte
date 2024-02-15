@@ -54,7 +54,7 @@
 			class="text-lg"
 			bind:value={quantity}
 			on:input={() => {
-				quantity = `${p(quantity)}`;
+				quantity = !!quantity ? `${p(quantity)}` : '';
 				if (price) total = padDecimal(`${round(p(price) * p(quantity))}`);
 				else if (total) price = padDecimal(`${round(p(total) / p(quantity))}`);
 			}}

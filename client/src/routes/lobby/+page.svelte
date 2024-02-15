@@ -89,7 +89,7 @@
 	};
 </script>
 
-<div class="flex h-full w-full flex-col">
+<div class="flex grow flex-col">
 	<MinimalHeader />
 
 	<Separator class="my-3" />
@@ -97,7 +97,7 @@
 	{#await init()}
 		<Loading />
 	{:then _init}
-		<h1 class="text-2xl font-semibold">Lobby members</h1>
+		<h1 class="text-2xl font-semibold">Lobby Members</h1>
 		<div class="my-2 flex w-full flex-wrap">
 			{#each state.contributors as contributor, idx}
 				<p

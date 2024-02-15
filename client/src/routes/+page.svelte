@@ -57,7 +57,7 @@
 	};
 </script>
 
-<div class="flex h-full w-full flex-col">
+<div class="flex grow flex-col">
 	<SplashHeader class="h-[20%] w-full justify-center" />
 
 	<Separator class="my-5"></Separator>
