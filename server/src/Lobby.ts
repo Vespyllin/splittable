@@ -1,4 +1,4 @@
-import { ItemData, LobbyState, SocketUser } from './types/state'
+import { LobbyState, ItemData, SocketUser } from './types/state'
 
 export class Lobby {
 	private state: LobbyState

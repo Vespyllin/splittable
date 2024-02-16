@@ -1,6 +1,8 @@
 import { Server } from 'socket.io'
 import { Lobby } from './Lobby'
 import { wsLog } from './log'
+import { SafeParseReturnType, ZodParsedType, z } from 'zod'
+import { UpdatePayload } from './types/socket'
 
 export class LobbySocket {
 	private wss: Server
@@ -9,12 +11,21 @@ export class LobbySocket {
 	private ttl: number
 	private startTime: number
 
+	private registerSchema
+	private updateSchema
+
 	constructor(wss: Server, namespace: string, lobby: Lobby, ttl: number) {
 		this.wss = wss
 		this.namespace = namespace
 		this.lobby = lobby
 		this.ttl = ttl
 		this.startTime = new Date().getTime()
+		this.registerSchema = z.string()
+		this.updateSchema = z.object({
+			username: z.string(),
+			itemName: z.string(),
+			amount: z.coerce.number(),
+		})
 	}
 
 	start(): void {
@@ -22,11 +33,17 @@ export class LobbySocket {
 			wsLog('RECV', this.namespace, 'connection')
 
 			socket.on('register', (payload, callback) => {
-				const username = payload
-				wsLog('RECV', this.namespace, 'register', username)
+				wsLog('RECV', this.namespace, 'register', payload)
+
+				const parsedPayload = this.registerSchema.safeParse(payload)
+				if (!parsedPayload.success) {
+					wsLog('SEND', this.namespace, 'register', payload, 'Invalid payload')
+					return callback({ status: 'Failure' })
+				}
+
+				const username = parsedPayload.data
 
 				const registeredUser = this.lobby.getUserByUsername(username)
-
 				if (registeredUser && registeredUser.socketId != socket.id) {
 					wsLog(
 						'SEND',
@@ -61,7 +78,9 @@ export class LobbySocket {
 			})
 
 			socket.on('update', async (payload) => {
-				if (!this.lobby.getUserBySocket(socket.id))
+				wsLog('RECV', this.namespace, 'update', payload)
+
+				if (!this.lobby.getUserBySocket(socket.id)) {
 					return wsLog(
 						'RECV',
 						this.namespace,
@@ -69,11 +88,23 @@ export class LobbySocket {
 						payload,
 						'Rejected message as socket is not registered.'
 					)
+				}
 
-				wsLog('RECV', this.namespace, 'update', payload)
+				const parsedPayload: SafeParseReturnType<UpdatePayload, UpdatePayload> =
+					this.updateSchema.safeParse(payload)
 
-				// TODO: Validation
-				const { username, itemName, amount } = payload
+				if (!parsedPayload.success) {
+					return wsLog(
+						'RECV',
+						this.namespace,
+						'update',
+						payload,
+						'Rejected message as it was malformed.'
+					)
+				}
+
+				const { username, itemName, amount } = parsedPayload.data
+
 				this.lobby.upsertContribution(username, itemName, amount)
 
 				wsLog(
@@ -89,13 +120,14 @@ export class LobbySocket {
 			socket.on('disconnect', () => {
 				const leaverName = this.lobby.getUserBySocket(socket.id)?.username
 
-				if (!leaverName)
+				if (!leaverName) {
 					return wsLog(
 						'RECV',
 						this.namespace,
 						'disconnect',
 						`Anon user disconnected.`
 					)
+				}
 
 				wsLog(
 					'RECV',

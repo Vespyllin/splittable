@@ -8,6 +8,8 @@ import rateLimit from 'express-rate-limit'
 import { serverLog } from './log'
 import { ResPayload } from './types/server'
 import { LobbySocket } from './LobbySocket'
+import { SafeParseReturnType, z } from 'zod'
+import { ItemData } from './types/state'
 
 const SERVER_PORT = 3388
 const SOCKET_PORT = 4430
@@ -27,7 +29,11 @@ const main = () => {
 		let closedLobbies = activeLobbies.filter((x) => !x.isAlive())
 		activeLobbies = activeLobbies.filter((x) => x.isAlive())
 
-		closedLobbies.forEach((x) => x.close())
+		closedLobbies.forEach((x) => {
+			closedLobbyNames.push(x.getNamespace())
+			x.close()
+		})
+
 		if (closedLobbies.length > 0)
 			serverLog(
 				'INFO',
@@ -75,8 +81,6 @@ const main = () => {
 			return res.json(resPayload).status(400)
 		}
 
-		// TODO: ZOD Payload Validation and Parsing
-
 		if (activeLobbies.find((x) => x.getNamespace() == lobbyName)) {
 			const resPayload: ResPayload = {
 				success: false,
@@ -86,8 +90,32 @@ const main = () => {
 			return res.json(resPayload).status(400)
 		}
 
-		const lobby = new Lobby(initialState)
-		const lobbySocket = new LobbySocket(wss, lobbyName, lobby, ttl)
+		const schema = z.array(
+			z.object({
+				name: z.string(),
+				price: z.coerce.number(),
+				quantity: z.coerce.number(),
+				total: z.coerce.number(),
+			})
+		)
+
+		const parsedState: SafeParseReturnType<ItemData[], ItemData[]> =
+			schema.safeParse(initialState)
+
+		console.log(parsedState)
+
+		if (!parsedState.success) {
+			const resPayload: ResPayload = { success: false, reason: 'Bad request' }
+			serverLog('REQ', '/create_lobby', { lobbyName, initialState }, resPayload)
+			return res.json(resPayload).status(400)
+		}
+
+		const lobbySocket = new LobbySocket(
+			wss,
+			lobbyName,
+			new Lobby(parsedState.data),
+			ttl
+		)
 		lobbySocket.start()
 
 		activeLobbies.push(lobbySocket)
