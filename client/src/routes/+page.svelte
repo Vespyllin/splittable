@@ -4,7 +4,8 @@
 	import SplashHeader from '$lib/components/layout/splashHeader.svelte';
 	import LobbyInput from '$lib/components/lobby/lobbyInput.svelte';
 
-	import type { ValidationCode } from '$lib/types/lobby';
+	import type { Error } from '$lib/types/lobby';
+
 	import { goto } from '$app/navigation';
 	import { cn } from '$lib/utils';
 	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
@@ -14,9 +15,19 @@
 	let username: string | undefined = undefined;
 	let lobbyName: string | undefined = undefined;
 
-	let error: { code: ValidationCode; message?: string } = { code: 'Valid' };
+	let error: Error = { code: 'Valid' };
 
 	const onSubmit = async () => {
+		if (!username) {
+			error = { code: 'Username', message: 'Please enter a username.' };
+			return;
+		}
+
+		if (!lobbyName) {
+			error = { code: 'Lobby', message: 'Please enter a lobby name.' };
+			return;
+		}
+
 		isFetching = true;
 
 		try {
@@ -31,7 +42,6 @@
 			}
 
 			if (!existsRes.ok || !exists.success) {
-				console.log('not ok');
 				error = {
 					code: 'Internal',
 					message: 'Internal server error. Please try again later.'
@@ -40,10 +50,8 @@
 			}
 
 			if (!data?.lobby) {
-				console.log('no lobby');
 				error = { code: 'Lobby', message: `Could not find lobby "${lobbyName}".` };
 			} else if (data?.username) {
-				console.log('username');
 				error = {
 					code: 'Username',
 					message: `Username "${username}" is not available in lobby ${lobbyName}.`

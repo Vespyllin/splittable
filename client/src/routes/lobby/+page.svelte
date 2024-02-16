@@ -28,14 +28,17 @@
 	const socket = io(`${PUBLIC_SOCKET_ENDPOINT}/${data.lobbyId}`);
 
 	const init = async () => {
-		const registerRes = await socket.timeout(3000).emitWithAck('register', data.username);
+		const registerRes = await socket.timeout(3000).emitWithAck('register', $usernameStore);
 
 		if (!registerRes || registerRes.status == 'Failure') {
 			socket.disconnect();
 			throw new Error('Could not register with server.');
 		}
 
-		state = { ...registerRes.data };
+		const { contributors, entries } = registerRes.data as Lobby;
+		contributors.sort((a, b) => (b == $usernameStore ? 1 : 0) - (a == $usernameStore ? 1 : 0));
+
+		state = { entries, contributors };
 
 		socket.on('join', (username: string) => {
 			state.contributors.push(username);
@@ -43,15 +46,13 @@
 		});
 
 		socket.on('update', (payload: UpdatePayload) => {
-			console.log("RECV on 'UPDATE':", payload);
-
 			const { username, itemName, amount } = payload;
 
 			const entryIdx = state.entries.findIndex((x) => {
 				return x.item.name == itemName;
 			});
 
-			if (entryIdx === -1) return console.log(`Could not find ${itemName} in state.`);
+			if (entryIdx === -1) throw new Error(`State inconsistency error.`);
 
 			const contributionIdx = state.entries[entryIdx].contributions.findIndex(
 				(x) => x.username == username
@@ -61,20 +62,22 @@
 				state.entries[entryIdx].contributions[contributionIdx].amount = amount;
 			} else {
 				if (amount != 0) {
-					state.entries[entryIdx].contributions.push(payload);
+					state.entries[entryIdx].contributions.push({ username, amount });
 				} else {
 					state.entries[entryIdx].contributions.splice(contributionIdx, 1);
 				}
+
+				state.entries[entryIdx].contributions.sort(
+					({ username: a }, { username: b }) =>
+						(b == $usernameStore ? 1 : 0) - (a == $usernameStore ? 1 : 0)
+				);
 			}
 
 			state = { ...state };
 		});
 
 		socket.on('leave', (leaverName: string) => {
-			console.log('RECV ON "LEAVE"', leaverName);
-			state.contributors = [
-				...state.contributors.filter((contributor) => contributor != leaverName)
-			];
+			state.contributors = state.contributors.filter((contributor) => contributor != leaverName);
 			state.entries = state.entries.map((entry) => {
 				entry.contributions = entry.contributions.filter(
 					(contribution) => contribution.username != leaverName
@@ -120,16 +123,11 @@
 			<p class="text-primary text-xl font-semibold">
 				{Euro.format(
 					state.entries
-						.map((x) => {
-							const filteredContributions = x.contributions.filter(
-								(x) => x.username == data.username
-							);
-
-							return (
+						.map(
+							(x) =>
 								x.item.price *
-								(filteredContributions.length > 0 ? filteredContributions[0].amount : 0)
-							);
-						})
+								(x.contributions.find((x) => x.username == data.username)?.amount ?? 0)
+						)
 						.reduce((acc, val) => acc + val, 0)
 				)}
 			</p>
