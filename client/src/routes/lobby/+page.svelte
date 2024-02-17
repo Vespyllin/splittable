@@ -58,19 +58,19 @@
 				(x) => x.username == username
 			);
 
-			if (contributionIdx !== -1 && amount != 0) {
-				state.entries[entryIdx].contributions[contributionIdx].amount = amount;
-			} else {
-				if (amount != 0) {
-					state.entries[entryIdx].contributions.push({ username, amount });
+			if (amount != 0) {
+				if (contributionIdx !== -1) {
+					state.entries[entryIdx].contributions[contributionIdx].amount = amount;
 				} else {
-					state.entries[entryIdx].contributions.splice(contributionIdx, 1);
+					state.entries[entryIdx].contributions.push({ username, amount });
 				}
 
 				state.entries[entryIdx].contributions.sort(
 					({ username: a }, { username: b }) =>
 						(b == $usernameStore ? 1 : 0) - (a == $usernameStore ? 1 : 0)
 				);
+			} else {
+				state.entries[entryIdx].contributions.splice(contributionIdx, 1);
 			}
 
 			state = { ...state };
@@ -99,7 +99,7 @@
 
 	{#await init()}
 		<Loading />
-	{:then _init}
+	{:then}
 		<h1 class="text-2xl font-semibold">Lobby Members</h1>
 		<div class="my-2 flex w-full flex-wrap">
 			{#each state.contributors as contributor, idx}
@@ -136,7 +136,7 @@
 		<div class="mt-4 h-full">
 			<h1 class="text-2xl font-semibold">Entries</h1>
 
-			<div class="flew grow flex-col">
+			<div class="flew mb-2 grow flex-col">
 				{#each state.entries as entry, idx}
 					<ContributionDialog
 						{entry}
@@ -150,7 +150,7 @@
 						}}
 					/>
 					{#if state.entries.length - 1 != idx}
-						<Separator class="bg-primary m-1 mx-auto mb-1 mt-4 w-[75%]" />
+						<Separator class="bg-primary mx-auto  mt-3 w-[75%]" />
 					{/if}
 				{/each}
 			</div>

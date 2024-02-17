@@ -12,9 +12,19 @@
 	export let defaultValue: number | undefined;
 
 	let contributionAmount: number = defaultValue ?? 1;
+	let isOpen = false;
 </script>
 
-<Dialog.Root>
+<Dialog.Root
+	bind:open={isOpen}
+	onOutsideClick={(e) => {
+		//! Prevents immediate opening of other items after closing
+		e.preventDefault();
+		setTimeout(() => {
+			isOpen = false;
+		}, 5);
+	}}
+>
 	<Dialog.Trigger class="w-full">
 		<ContributionItem {entry} />
 	</Dialog.Trigger>
