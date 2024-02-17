@@ -5,43 +5,24 @@
 	import { cn } from '$lib/utils';
 	import { Trash } from 'radix-icons-svelte';
 	import { padDecimal, validateCurrency } from '$lib/utils';
-
-	const round = (value: number) => {
-		const roundedValue = Math.round(value * 100) / 100;
-		if (isNaN(roundedValue)) return value;
-		return roundedValue;
-	};
+	import type { ItemFormData } from '$lib/types/input';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
-	export let item: {
-		name: string;
-		total: string;
-		quantity: string;
-		price: string;
-	} = {
-		name: '',
-		total: '',
-		quantity: '',
-		price: ''
-	};
-
-	let { name, total, quantity, price } = item;
-
-	$: item = {
-		name,
-		total,
-		quantity,
-		price
-	};
-
 	export let onDelete: ((e: any) => void) | ((e: any) => Promise<void>);
 	export let isDuplicate = false;
+	export let item: ItemFormData;
 
-	const p = (v: any) => {
-		return v * 1;
+	let { name, total, quantity, price } = item;
+	$: item = { name, total, quantity, price };
+
+	const round = (value: number) => {
+		const roundedValue = Math.round(value * 100) / 100;
+		return !isNaN(roundedValue) ? roundedValue : value;
 	};
+
+	const p = (v: any) => v * 1;
 </script>
 
 <div class={cn('grid grid-cols-6 gap-2', className)}>

@@ -13,9 +13,10 @@
 	import { goto } from '$app/navigation';
 
 	import { cn, Euro } from '$lib/utils';
-	import type { Lobby, UpdatePayload } from '$lib/types/lobby';
+	import type { Lobby } from '$lib/types/lobby';
 
 	import { usernameStore } from '$lib/store/username';
+	import type { UpdatePayload } from '$lib/types/server';
 
 	export let data;
 	$usernameStore = data.username;

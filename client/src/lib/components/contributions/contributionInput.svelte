@@ -8,6 +8,9 @@
 	import { Minus, Plus } from 'radix-icons-svelte';
 	import { Euro } from '$lib/utils';
 
+	export let entry: EntryData;
+	export let contributionAmount: number = 1;
+
 	const plusHandler = () => {
 		if (numerator >= denominator) numerator += 1;
 		else denominator = Math.max(denominator - 1, 1);
@@ -18,16 +21,11 @@
 		else denominator = denominator + 1;
 	};
 
-	let numerator = 1;
-	let denominator = 1;
+	let numerator = contributionAmount >= 1 ? contributionAmount : 1;
+	let denominator = contributionAmount < 1 ? 1 / contributionAmount : 1;
+
 	let plusDisabled = false;
 	$: plusDisabled = numerator / denominator == entry.item.quantity;
-
-	export let entry: EntryData;
-	export let contributionAmount: number = 1;
-
-	if (contributionAmount >= 1) numerator = contributionAmount;
-	else denominator = 1 / contributionAmount;
 
 	$: contributionAmount = numerator / denominator;
 </script>

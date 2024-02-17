@@ -1,25 +1,26 @@
 <script lang="ts">
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { Plus } from 'radix-icons-svelte';
+
 	import MinimalHeader from '$lib/components/layout/header.svelte';
 	import LobbyInput from '$lib/components/lobby/lobbyInput.svelte';
 	import ReceiptItemInput from '$lib/components/lobby/itemInput.svelte';
 
 	import { goto } from '$app/navigation';
 
-	import type { ValidationCode } from '$lib/types/lobby';
-	import { Plus } from 'radix-icons-svelte';
+	import type { ItemFormData } from '$lib/types/input';
+	import type { Error } from '$lib/types/server';
+
 	import { cn, Euro } from '$lib/utils';
 	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 
-	type ItemFormData = { name: string; total: string; quantity: string; price: string }[];
-
-	let error: { code: ValidationCode; message?: string } = { code: 'Valid' };
-
 	let username: string | undefined = undefined;
 	let lobbyName: string | undefined = undefined;
+	let data: ItemFormData[] = [];
 
-	let data: ItemFormData = [];
+	let error: Error = { code: 'Valid' };
+
 	let addDisabled = false;
 	let createDisabled = true;
 	let isFetching = false;
@@ -36,6 +37,7 @@
 		uniqueEntries.clear();
 		data.forEach((x) => uniqueEntries.add(x.name));
 	}
+
 	$: createDisabled =
 		isFetching ||
 		data.length == 0 ||

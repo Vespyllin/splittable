@@ -4,7 +4,7 @@
 	import SplashHeader from '$lib/components/layout/splashHeader.svelte';
 	import LobbyInput from '$lib/components/lobby/lobbyInput.svelte';
 
-	import type { Error } from '$lib/types/lobby';
+	import type { Error } from '$lib/types/server';
 
 	import { goto } from '$app/navigation';
 	import { cn } from '$lib/utils';

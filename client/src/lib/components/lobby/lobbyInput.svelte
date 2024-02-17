@@ -1,16 +1,15 @@
 <script lang="ts">
 	import Input from '$lib/components/ui/input/input.svelte';
 
-	import type { ValidationCode } from '$lib/types/lobby';
+	import type { ValidationCode } from '$lib/types/server';
 	import { cn } from '$lib/utils';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
 
-	export let error: ValidationCode;
 	export let username: string = '';
 	export let lobbyName: string = '';
-
+	export let error: ValidationCode;
 	export let isLoading = false;
 </script>
 
