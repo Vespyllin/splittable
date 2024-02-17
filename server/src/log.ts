@@ -18,8 +18,8 @@ export const wsLog = (
 	const paramString =
 		(payload || info) &&
 		':' +
-			(payload ? `\n\tpayload = ${JSON.stringify(payload)}` : '') +
-			(info ? `\n\tinfo = ${info}` : '')
+			(payload ? `\n\t\tpayload = ${JSON.stringify(payload)}` : '') +
+			(info ? `\n\t\tinfo = ${info}` : '')
 
 	if (eventType == 'RECV' || eventType == 'SEND')
 		log(`${eventType} on "${event}" in /${namespace}` + paramString)
@@ -36,8 +36,8 @@ export const serverLog = (
 	const paramString =
 		(reqPayload || resPayload || info) &&
 		':' +
-			(reqPayload ? `\n\tRequest Payload = ${JSON.stringify(reqPayload)}` : '') +
-			(resPayload ? `\n\tResponse Payload = ${JSON.stringify(resPayload)}` : '') +
+			(reqPayload ? `\n\t\tRequest Payload = ${JSON.stringify(reqPayload)}` : '') +
+			(resPayload ? `\n\t\tResponse Payload = ${JSON.stringify(resPayload)}` : '') +
 			(info ? `\n\tinfo = ${info}` : '')
 
 	log(`${eventType} on ${endpoint}` + paramString)

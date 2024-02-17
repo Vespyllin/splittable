@@ -40,9 +40,7 @@ const main = () => {
 				'Internal',
 				undefined,
 				undefined,
-				`Pruned ${
-					closedLobbyNames.length
-				} lobbies:\n${closedLobbyNames.toString()}`
+				`Pruned ${closedLobbyNames.length} lobbies:\n${closedLobbyNames.toString()}`
 			)
 	}, 1000)
 
@@ -66,7 +64,7 @@ const main = () => {
 
 		const resPayload: ResPayload = {
 			success: true,
-			data: { lobby: lobbyExists, username: usernameExists },
+			data: { lobby: lobbyExists, username: usernameExists }
 		}
 		serverLog('REQ', '/exists', req.params, resPayload)
 		return res.json(resPayload).status(200)
@@ -84,7 +82,7 @@ const main = () => {
 		if (activeLobbies.find((x) => x.getNamespace() == lobbyName)) {
 			const resPayload: ResPayload = {
 				success: false,
-				reason: 'Lobby already exists',
+				reason: 'Lobby already exists'
 			}
 			serverLog('REQ', '/create_lobby', { lobbyName, initialState }, resPayload)
 			return res.json(resPayload).status(400)
@@ -95,12 +93,11 @@ const main = () => {
 				name: z.string(),
 				price: z.coerce.number(),
 				quantity: z.coerce.number(),
-				total: z.coerce.number(),
+				total: z.coerce.number()
 			})
 		)
 
-		const parsedState: SafeParseReturnType<ItemData[], ItemData[]> =
-			schema.safeParse(initialState)
+		const parsedState: SafeParseReturnType<ItemData[], ItemData[]> = schema.safeParse(initialState)
 
 		console.log(parsedState)
 
@@ -110,12 +107,7 @@ const main = () => {
 			return res.json(resPayload).status(400)
 		}
 
-		const lobbySocket = new LobbySocket(
-			wss,
-			lobbyName,
-			new Lobby(parsedState.data),
-			ttl
-		)
+		const lobbySocket = new LobbySocket(wss, lobbyName, new Lobby(parsedState.data), ttl)
 		lobbySocket.start()
 
 		activeLobbies.push(lobbySocket)

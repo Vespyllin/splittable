@@ -1,7 +1,7 @@
 import { Server } from 'socket.io'
 import { Lobby } from './Lobby'
 import { wsLog } from './log'
-import { SafeParseReturnType, ZodParsedType, z } from 'zod'
+import { SafeParseReturnType, z } from 'zod'
 import { UpdatePayload } from './types/socket'
 
 export class LobbySocket {
@@ -24,7 +24,7 @@ export class LobbySocket {
 		this.updateSchema = z.object({
 			username: z.string(),
 			itemName: z.string(),
-			amount: z.coerce.number(),
+			amount: z.coerce.number()
 		})
 	}
 
@@ -59,19 +59,13 @@ export class LobbySocket {
 				const state = this.lobby.getState()
 				const response = {
 					entries: state.entries,
-					contributors: state.users.map((x) => x.username),
+					contributors: state.users.map((x) => x.username)
 				}
 
 				wsLog('SEND', this.namespace, 'register', response, username)
 				callback({ status: 'Success', data: response })
 
-				wsLog(
-					'SEND',
-					this.namespace,
-					'join',
-					username,
-					`Sent to "registered" room.`
-				)
+				wsLog('SEND', this.namespace, 'join', username, `Sent to "registered" room.`)
 				this.wss.of(this.namespace).to('registered').emit('join', username)
 
 				socket.join('registered')
@@ -107,13 +101,7 @@ export class LobbySocket {
 
 				this.lobby.upsertContribution(username, itemName, amount)
 
-				wsLog(
-					'SEND',
-					this.namespace,
-					'update',
-					payload,
-					`Sent to "registered" room.`
-				)
+				wsLog('SEND', this.namespace, 'update', payload, `Sent to "registered" room.`)
 				this.wss.of(this.namespace).to('registered').emit('update', payload)
 			})
 
@@ -121,20 +109,10 @@ export class LobbySocket {
 				const leaverName = this.lobby.getUserBySocket(socket.id)?.username
 
 				if (!leaverName) {
-					return wsLog(
-						'RECV',
-						this.namespace,
-						'disconnect',
-						`Anon user disconnected.`
-					)
+					return wsLog('RECV', this.namespace, 'disconnect', `Anon user disconnected.`)
 				}
 
-				wsLog(
-					'RECV',
-					this.namespace,
-					'disconnect',
-					`User ${leaverName} disconnected.`
-				)
+				wsLog('RECV', this.namespace, 'disconnect', `User ${leaverName} disconnected.`)
 				socket.leave('registered')
 
 				if (!this.lobby.removeUser(leaverName))
@@ -145,13 +123,7 @@ export class LobbySocket {
 						`User ${leaverName} disconnected but not found in state.`
 					)
 
-				wsLog(
-					'SEND',
-					this.namespace,
-					'leave',
-					leaverName,
-					`Sent to "registered" room.`
-				)
+				wsLog('SEND', this.namespace, 'leave', leaverName, `Sent to "registered" room.`)
 				this.wss.of(this.namespace).to('registered').emit('leave', leaverName)
 			})
 		})
@@ -161,8 +133,7 @@ export class LobbySocket {
 		const currentTime = new Date().getTime()
 		const normalExpire = this.startTime + this.ttl < currentTime
 		const hardExpire =
-			this.lobby.getAllUsers().length == 0 &&
-			this.startTime + this.ttl / 2 < currentTime
+			this.lobby.getAllUsers().length == 0 && this.startTime + this.ttl / 2 < currentTime
 
 		return !normalExpire || !hardExpire
 	}
@@ -176,13 +147,7 @@ export class LobbySocket {
 	}
 
 	close(): void {
-		wsLog(
-			'INFO',
-			'Internal',
-			'Shudown',
-			undefined,
-			`Shutting down namespace ${this.namespace}.`
-		)
+		wsLog('INFO', 'Internal', 'Shudown', undefined, `Shutting down namespace ${this.namespace}.`)
 		this.wss.of(this.namespace).disconnectSockets(true)
 		this.wss.of(this.namespace).removeAllListeners()
 	}

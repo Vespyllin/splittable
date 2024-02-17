@@ -8,7 +8,7 @@ export class Lobby {
 			users: [],
 			entries: initialState.map((x) => {
 				return { item: x, contributions: [] }
-			}),
+			})
 		}
 	}
 
@@ -33,9 +33,7 @@ export class Lobby {
 		)
 			return false
 
-		this.state.users = [
-			...this.state.users.filter((user) => user.username != username),
-		]
+		this.state.users = [...this.state.users.filter((user) => user.username != username)]
 		this.state.entries = this.state.entries.map((entry) => {
 			entry.contributions = entry.contributions.filter(
 				(contribution) => contribution.username != username
@@ -66,8 +64,7 @@ export class Lobby {
 			this.state.entries[entryIdx].contributions.push({ username, amount })
 		} else if (contributionIdx != -1) {
 			if (amount != 0) {
-				this.state.entries[entryIdx].contributions[contributionIdx].amount =
-					amount
+				this.state.entries[entryIdx].contributions[contributionIdx].amount = amount
 			} else {
 				this.state.entries[entryIdx].contributions.splice(contributionIdx, 1)
 			}
