@@ -31,7 +31,18 @@
 			return name && total && quantity && price;
 		});
 
-	$: createDisabled = isFetching || data.length == 0 || addDisabled || !username || !lobbyName;
+	const uniqueEntries = new Set<string>();
+	$: {
+		uniqueEntries.clear();
+		data.forEach((x) => uniqueEntries.add(x.name));
+	}
+	$: createDisabled =
+		isFetching ||
+		data.length == 0 ||
+		addDisabled ||
+		!username ||
+		!lobbyName ||
+		[...uniqueEntries].length != data.length;
 
 	const onSubmit = async () => {
 		isFetching = true;
@@ -143,7 +154,12 @@
 					<Separator class="mx-auto my-2 w-[75%]" />
 				{/if}
 
-				<ReceiptItemInput class="h-20" bind:item onDelete={() => (data = data.toSpliced(idx, 1))} />
+				<ReceiptItemInput
+					class="h-20"
+					bind:item
+					isDuplicate={item.name.length > 0 && data.filter((x) => x.name == item.name).length > 1}
+					onDelete={() => (data = data.toSpliced(idx, 1))}
+				/>
 			{/each}
 		{/key}
 	</div>

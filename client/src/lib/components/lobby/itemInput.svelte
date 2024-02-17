@@ -37,6 +37,7 @@
 	};
 
 	export let onDelete: ((e: any) => void) | ((e: any) => Promise<void>);
+	export let isDuplicate = false;
 
 	const p = (v: any) => {
 		return v * 1;
@@ -44,7 +45,14 @@
 </script>
 
 <div class={cn('grid grid-cols-6 gap-2', className)}>
-	<Input class="col-span-5 text-lg" placeholder="Item Name" bind:value={name} />
+	<Input
+		class={cn(
+			'col-span-5 text-lg ',
+			isDuplicate && 'border-red-600 focus-visible:border-0 focus-visible:ring-red-600'
+		)}
+		placeholder="Item Name"
+		bind:value={name}
+	/>
 
 	<Button type="reset" on:click={onDelete}><Trash /></Button>
 	<div class="col-span-2">
