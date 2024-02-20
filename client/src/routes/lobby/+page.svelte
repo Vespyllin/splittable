@@ -7,7 +7,8 @@
 
 	import MinimalHeader from '$lib/components/layout/header.svelte';
 	import ContributionDialog from '$lib/components/contributions/contributionDialog.svelte';
-	import Loading from './loading.svelte';
+	import Loading from '$lib/components/lobby/loading.svelte';
+	
 
 	import { io } from 'socket.io-client';
 	import { goto } from '$app/navigation';
@@ -15,7 +16,7 @@
 	import { cn, Euro } from '$lib/utils';
 	import type { Lobby } from '$lib/types/lobby';
 
-	import { usernameStore } from '$lib/store/username';
+	import { usernameStore } from '$lib/stores/username';
 	import type { UpdatePayload } from '$lib/types/server';
 
 	export let data;
@@ -151,7 +152,7 @@
 						}}
 					/>
 					{#if state.entries.length - 1 != idx}
-						<Separator class="bg-primary mx-auto  mt-3 w-[75%]" />
+						<Separator class="bg-primary mx-auto mt-3 w-[75%]" />
 					{/if}
 				{/each}
 			</div>

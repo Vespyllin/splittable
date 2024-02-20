@@ -3,7 +3,7 @@
 
 	import type { EntryData } from '$lib/types/lobby';
 
-	import { usernameStore } from '$lib/store/username';
+	import { usernameStore } from '$lib/stores/username';
 	import { Euro, cn } from '$lib/utils';
 
 	export let entry: EntryData;

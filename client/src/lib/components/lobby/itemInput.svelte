@@ -23,6 +23,8 @@
 	};
 
 	const p = (v: any) => v * 1;
+
+	const noTab = '-1' as unknown as number;
 </script>
 
 <div class={cn('grid grid-cols-6 gap-2', className)}>
@@ -35,7 +37,7 @@
 		bind:value={name}
 	/>
 
-	<Button type="reset" on:click={onDelete}><Trash /></Button>
+	<Button type="reset" tabindex={noTab} on:click={onDelete}><Trash /></Button>
 	<div class="col-span-2">
 		<Input
 			placeholder="Quantity"
